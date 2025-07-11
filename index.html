@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HART Quiz - Kahoot Style</title>
+    <title>Medical Conditions Quiz - Kahoot Style</title>
     <style>
         /* --- CSS for the Quiz Interface --- */
         body {
@@ -92,8 +92,8 @@
         }
 
         /* Specific colors for Kahoot-like answer buttons */
-        .answer-btn:nth-child(1) { background-color: orange; color: white; } /* Orange */
-        .answer-btn:nth-child(2) { background-color: purple; color: white; } /* Purple */
+        .answer-btn:nth-child(1) { background-color: #F44336; color: white; } /* Red */
+        .answer-btn:nth-child(2) { background-color: #4CAF50; color: white; } /* Green */
         .answer-btn:nth-child(3) { background-color: #2196F3; color: white; } /* Blue */
         .answer-btn:nth-child(4) { background-color: #FFEB3B; color: #333; } /* Yellow */
 
@@ -166,7 +166,7 @@
 <body>
     <div class="quiz-container">
         <div id="quiz-start-screen" class="screen">
-            <h1>HART Quiz</h1>
+            <h1>Medical Conditions Quiz</h1>
             <button id="start-quiz-btn" class="btn">Start Quiz</button>
         </div>
 
@@ -223,8 +223,11 @@
             const answeredQuestions = new Map(); // To store answers and whether they were correct {index: {selected: 1, correct: true}}
 
             // --- ALL QUIZ QUESTIONS ---
-            // These questions are derived from the provided presentation materials,
-            // focusing on risk factors, symptoms, categories, red flags, and management.
+            // Add your quiz questions here. Each question should be an object with:
+            // - question: The question text (string)
+            // - options: An array of answer options (strings)
+            // - correctAnswerIndex: The 0-based index of the correct answer in the options array (number)
+            // - explanation: A brief explanation for the answer (string)
             const allQuestions = [
                 // Definitions
                 {

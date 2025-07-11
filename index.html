@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Medical Conditions Quiz - Kahoot Style</title>
+    <title>Major Incident Quiz - Kahoot Style</title>
     <style>
         /* --- CSS for the Quiz Interface --- */
         body {
@@ -72,6 +72,12 @@
         .btn:hover {
             background-color: #FFD54F;
             transform: translateY(-2px);
+        }
+        
+        .btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            transform: none;
         }
 
         .answer-grid {
@@ -166,7 +172,7 @@
 <body>
     <div class="quiz-container">
         <div id="quiz-start-screen" class="screen">
-            <h1>Medical Conditions Quiz</h1>
+            <h1>Major Incident Quiz</h1>
             <button id="start-quiz-btn" class="btn">Start Quiz</button>
         </div>
 
@@ -220,14 +226,10 @@
             let currentQuestionIndex = 0;
             let score = 0;
             let questionAnswered = false; // Flag to prevent multiple answers per question
-            const answeredQuestions = new Map(); // To store answers and whether they were correct {index: {selected: 1, correct: true}}
+            // To store answers and whether they were correct {questionIndex: {selectedOptionIndex: 1, correct: true, scoreAwarded: 1}}
+            const answeredQuestionsState = new Map(); 
 
             // --- ALL QUIZ QUESTIONS ---
-            // Add your quiz questions here. Each question should be an object with:
-            // - question: The question text (string)
-            // - options: An array of answer options (strings)
-            // - correctAnswerIndex: The 0-based index of the correct answer in the options array (number)
-            // - explanation: A brief explanation for the answer (string)
             const allQuestions = [
                 // Definitions
                 {
@@ -239,7 +241,7 @@
                         "An incident affecting only internal operations."
                     ],
                     correctAnswerIndex: 2,
-                    [cite_start]explanation: "A Major Incident is defined as 'An event or situation with a range of serious consequences which requires special arrangements to be implemented by one or more emergency responder agency.' [cite: 6]"
+                    explanation: "A Major Incident is defined as 'An event or situation with a range of serious consequences which requires special arrangements to be implemented by one or more emergency responder agency.'"
                 },
                 {
                     question: "How many patients are typically involved in a 'Major Incident' according to the documents?",
@@ -250,7 +252,7 @@
                         "Less than ten patients"
                     ],
                     correctAnswerIndex: 1,
-                    [cite_start]explanation: "A Major Incident typically involves 'Tens of patients'. [cite: 6]"
+                    explanation: "A Major Incident typically involves 'Tens of patients'."
                 },
                 {
                     question: "What is a 'Mass Casualty Incident' defined as in the provided materials?",
@@ -261,7 +263,7 @@
                         "An incident requiring only one emergency service"
                     ],
                     correctAnswerIndex: 2,
-                    [cite_start]explanation: "A Mass Casualty Incident is defined as 'Involving Hundreds of patients'. [cite: 6]"
+                    explanation: "A Mass Casualty Incident is defined as 'Involving Hundreds of patients'."
                 },
                 {
                     question: "An incident involving 'thousands of patients' is classified as what type of incident?",
@@ -272,7 +274,7 @@
                         "Catastrophic Incident"
                     ],
                     correctAnswerIndex: 3,
-                    [cite_start]explanation: "An incident involving 'thousands of patients' is classified as a 'Catastrophic Incident'. [cite: 6]"
+                    explanation: "An incident involving 'thousands of patients' is classified as a 'Catastrophic Incident'."
                 },
                 {
                     question: "What is the key difference between a HazMat incident and a CBRN(e) incident?",
@@ -283,7 +285,7 @@
                         "HazMat only occurs indoors, CBRN(e) occurs outdoors."
                     ],
                     correctAnswerIndex: 1,
-                    [cite_start]explanation: "A HazMat incident is an 'accidental slip or release of a Hazardous Material', while a CBRN(e) incident is the 'deliberate release' of specific agents. [cite: 5]"
+                    explanation: "A HazMat incident is an 'accidental slip or release of a Hazardous Material', while a CBRN(e) incident is the 'deliberate release' of specific agents."
                 },
                 {
                     question: "Which of the following is NOT typically considered a 'HazMat Event' according to the provided information?",
@@ -294,7 +296,7 @@
                         "Deliberate release of a Chemical Agent"
                     ],
                     correctAnswerIndex: 3,
-                    explanation: "The deliberate release of a Chemical Agent falls under CBRN(e), not HazMat. [cite_start]HazMat events are accidental. [cite: 5]"
+                    explanation: "The deliberate release of a Chemical Agent falls under CBRN(e), not HazMat. HazMat events are accidental."
                 },
                 {
                     question: "What does the 'C' in CBRN(e) stand for?",
@@ -305,7 +307,7 @@
                         "Catastrophic"
                     ],
                     correctAnswerIndex: 1,
-                    [cite_start]explanation: "CBRN(e) stands for Chemical, Biological, Radiological, Nuclear, and (e)xplosive Material. [cite: 5]"
+                    explanation: "CBRN(e) stands for Chemical, Biological, Radiological, Nuclear, and (e)xplosive Material."
                 },
                 {
                     question: "What does the 'e' in CBRN(e) stand for?",
@@ -316,7 +318,7 @@
                         "Exposure"
                     ],
                     correctAnswerIndex: 2,
-                    [cite_start]explanation: "The 'e' in CBRN(e) stands for '(e)xplosive Material'. [cite: 5]"
+                    explanation: "The 'e' in CBRN(e) stands for '(e)xplosive Material'."
                 },
 
                 // Mnemonics
@@ -329,7 +331,7 @@
                         "BAD COLDS"
                     ],
                     correctAnswerIndex: 2,
-                    [cite_start]explanation: "METHANE is the mnemonic used for constructing a report, asking questions like 'What happened?' and 'How many patients?'. [cite: 3]"
+                    explanation: "METHANE is the mnemonic used for constructing a report, asking questions like 'What happened?' and 'How many patients?'."
                 },
                 {
                     question: "The METHANE report should include what information regarding patients?",
@@ -340,7 +342,7 @@
                         "Their next of kin contact details"
                     ],
                     correctAnswerIndex: 1,
-                    [cite_start]explanation: "The METHANE report includes 'How many patients and what would you expect their injuries and priorities to be?'. [cite: 3]"
+                    explanation: "The METHANE report includes 'How many patients and what would you expect their injuries and priorities to be?'."
                 },
                 {
                     question: "In the context of the METHANE report, what question relates to inter-agency communication?",
@@ -351,7 +353,7 @@
                         "What is the incident budget?"
                     ],
                     correctAnswerIndex: 1,
-                    [cite_start]explanation: "The METHANE report covers 'What could you tell the other agencies in attendance?' and 'What information would you like from other agencies?'. [cite: 3]"
+                    explanation: "The METHANE report covers 'What could you tell the other agencies in attendance?' and 'What information would you like from other agencies?'."
                 },
                 {
                     question: "Which of the following is a component of the 'RESCUE FORMULA' for water incidents?",
@@ -362,7 +364,7 @@
                         "WAIT"
                     ],
                     correctAnswerIndex: 1,
-                    [cite_start]explanation: "The RESCUE FORMULA includes SHOUT, REACH, THROW, ROW, GO AND TOW, HELO, DIVERT FLOW, NO GO. [cite: 7]"
+                    explanation: "The RESCUE FORMULA includes SHOUT, REACH, THROW, ROW, GO AND TOW, HELO, DIVERT FLOW, NO GO."
                 },
                 {
                     question: "Which of the following is one of the principles of the R-A-R mnemonic for Hazard Assessment?",
@@ -373,7 +375,7 @@
                         "Reassure"
                     ],
                     correctAnswerIndex: 1,
-                    [cite_start]explanation: "R-A-R stands for RECOGNISE, ASSESS, REACT. [cite: 5]"
+                    explanation: "R-A-R stands for RECOGNISE, ASSESS, REACT."
                 },
                 {
                     question: "The CRESS tool is primarily used for what purpose in a hazardous substance incident?",
@@ -384,7 +386,7 @@
                         "To provide immediate medical treatment"
                     ],
                     correctAnswerIndex: 1,
-                    [cite_start]explanation: "The CRESS tool helps health services identify the type and nature of the hazardous substance incident by reporting key information from casualties. [cite: 5]"
+                    explanation: "The CRESS tool helps health services identify the type and nature of the hazardous substance incident by reporting key information from casualties."
                 },
                 {
                     question: "What is the primary function of the BAD COLDS tool?",
@@ -395,7 +397,7 @@
                         "To provide psychological first aid"
                     ],
                     correctAnswerIndex: 1,
-                    [cite_start]explanation: "The BAD COLDS tool is used to support the categorisation and potential identification of substance(s) causing concern. [cite: 5]"
+                    explanation: "The BAD COLDS tool is used to support the categorisation and potential identification of substance(s) causing concern."
                 },
 
                 // Scene Management
@@ -408,7 +410,7 @@
                         "Not establishing the presenting complaint early"
                     ],
                     correctAnswerIndex: 2,
-                    [cite_start]explanation: "Maximising safety for everyone on scene and dynamic risk assessment (DRA) are highlighted as important. [cite: 1]"
+                    explanation: "Maximising safety for everyone on scene and dynamic risk assessment (DRA) are highlighted as important."
                 },
                 {
                     question: "In scene assessment for trauma cases, what is it important to establish?",
@@ -419,7 +421,7 @@
                         "The nearest hospital's bed availability"
                     ],
                     correctAnswerIndex: 1,
-                    [cite_start]explanation: "It is important to establish the Mechanism of Injury (MOI) in trauma cases. [cite: 1]"
+                    explanation: "It is important to establish the Mechanism of Injury (MOI) in trauma cases."
                 },
                 {
                     question: "Which cordon zone is described as requiring 'Specialist Responders'?",
@@ -430,7 +432,7 @@
                         "Green Zone"
                     ],
                     correctAnswerIndex: 2,
-                    [cite_start]explanation: "The Hot Zone is for 'Specialist Responders'. [cite: 5, 7]"
+                    explanation: "The Hot Zone is for 'Specialist Responders'."
                 },
                 {
                     question: "Which cordon zone is described as for 'Non Specialist's With Appropriate PPE'?",
@@ -441,7 +443,7 @@
                         "Red Zone"
                     ],
                     correctAnswerIndex: 2,
-                    [cite_start]explanation: "The Warm Zone is for 'Non Specialist's With Appropriate PPE'. [cite: 5, 7]"
+                    explanation: "The Warm Zone is for 'Non Specialist's With Appropriate PPE'."
                 },
                 {
                     question: "What is the primary characteristic of the 'Cold Zone' in incident cordons?",
@@ -452,7 +454,7 @@
                         "Where initial triage takes place"
                     ],
                     correctAnswerIndex: 1,
-                    [cite_start]explanation: "The Cold Zone is characterized by 'No PPE' required. [cite: 5, 7]"
+                    explanation: "The Cold Zone is characterized by 'No PPE' required."
                 },
                 {
                     question: "Emergency Responders should NOT cross which cordon into the Warm Zone under any circumstances?",
@@ -463,7 +465,7 @@
                         "Green Cordon"
                     ],
                     correctAnswerIndex: 1,
-                    [cite_start]explanation: "Emergency Responders should 'Do Not Cross the Inner Cordon into the Warm Zone under any circumstances'. [cite: 5]"
+                    explanation: "Emergency Responders should 'Do Not Cross the Inner Cordon into the Warm Zone under any circumstances'."
                 },
                 {
                     question: "What is the aim of triage?",
@@ -474,7 +476,7 @@
                         "To determine the legal liability of the incident."
                     ],
                     correctAnswerIndex: 2,
-                    [cite_start]explanation: "Triage aims to categorize patients based on the severity of their injuries to prioritize treatment. [cite: 2]"
+                    explanation: "Triage aims to categorize patients based on the severity of their injuries to prioritize treatment."
                 },
                 {
                     question: "What are the two phases of triage mentioned in the documents?",
@@ -485,7 +487,7 @@
                         "Hot and Cold"
                     ],
                     correctAnswerIndex: 1,
-                    [cite_start]explanation: "The two phases of triage are Triage Sieve and Triage Sort. [cite: 2]"
+                    explanation: "The two phases of triage are Triage Sieve and Triage Sort."
                 },
                 {
                     question: "What are the primary objectives of the Initial Operational Response (IOR) to incidents involving hazardous substances or CBRN materials?",
@@ -496,7 +498,7 @@
                         "To determine the financial cost of the incident."
                     ],
                     correctAnswerIndex: 2,
-                    [cite_start]explanation: "The primary objectives of IOR are to maximise public safety and save lives, minimise operational risk, and ensure effective transition to SOR. [cite: 5]"
+                    explanation: "The primary objectives of IOR are to maximise public safety and save lives, minimise operational risk, and ensure effective transition to SOR."
                 },
                 {
                     question: "What should always be in place for an Industry Confined Space according to the 'Working in Hazardous Environments' document?",
@@ -507,7 +509,7 @@
                         "No specific safety measures"
                     ],
                     correctAnswerIndex: 1,
-                    [cite_start]explanation: "An Industry Confined Space 'Should always have a pre arranged rescue and medical team'. [cite: 7]"
+                    explanation: "An Industry Confined Space 'Should always have a pre arranged rescue and medical team'."
                 },
                 {
                     question: "When responding on an airfield, what should responders wait for before proceeding?",
@@ -518,7 +520,7 @@
                         "A green light from ground staff"
                     ],
                     correctAnswerIndex: 2,
-                    [cite_start]explanation: "When responding on an airfield, responders should 'Wait for your Escort Vehicles'. [cite: 7]"
+                    explanation: "When responding on an airfield, responders should 'Wait for your Escort Vehicles'."
                 },
                 {
                     question: "Who has control of the scene at an aviation incident on an airfield?",
@@ -529,7 +531,7 @@
                         "The Fire & Rescue Incident Commander"
                     ],
                     correctAnswerIndex: 1,
-                    [cite_start]explanation: "The 'Captain of the aircraft has control' at an airfield incident. [cite: 7]"
+                    explanation: "The 'Captain of the aircraft has control' at an airfield incident."
                 },
                 {
                     question: "Which type of RTC involves potential hazards from Lithium Ion Batteries?",
@@ -540,7 +542,7 @@
                         "Armoured Vehicles"
                     ],
                     correctAnswerIndex: 2,
-                    [cite_start]explanation: "Electric Vehicle RTC’s involve potential hazards from Lithium Ion Batteries. [cite: 7]"
+                    explanation: "Electric Vehicle RTC’s involve potential hazards from Lithium Ion Batteries."
                 },
                 {
                     question: "Who grants emergency access at Rail Incidents?",
@@ -551,7 +553,7 @@
                         "Network Rail Control"
                     ],
                     correctAnswerIndex: 1,
-                    [cite_start]explanation: "Emergency Access at Rail Incidents is granted by the Mobile Operations Manager – (MOM). [cite: 7]"
+                    explanation: "Emergency Access at Rail Incidents is granted by the Mobile Operations Manager – (MOM)."
                 },
                 {
                     question: "Which of the following is NOT listed as a potential hazard during water incidents?",
@@ -562,7 +564,7 @@
                         "Absence of current"
                     ],
                     correctAnswerIndex: 3,
-                    [cite_start]explanation: "Potential hazards during water incidents include Unstable Street Furniture, Deceptive speed of water, and Bio Hazards. [cite: 7]"
+                    explanation: "Potential hazards during water incidents include Unstable Street Furniture, Deceptive speed of water, and Bio Hazards."
                 },
                 {
                     question: "What type of decontamination involves patients removing contaminated clothing, with items categorised as 'Orange = Dirty' and 'Green = Clean'?",
@@ -573,7 +575,7 @@
                         "Emergency Disrobe Packs"
                     ],
                     correctAnswerIndex: 3,
-                    [cite_start]explanation: "Emergency Disrobe Packs are used for patients to remove contaminated clothing, with 'Orange = Dirty' and 'Green = Clean' labels. [cite: 5]"
+                    explanation: "Emergency Disrobe Packs are used for patients to remove contaminated clothing, with 'Orange = Dirty' and 'Green = Clean' labels."
                 },
 
                 // Incident Types / Hazards
@@ -586,7 +588,7 @@
                         "A training program for CBRN response"
                     ],
                     correctAnswerIndex: 1,
-                    [cite_start]explanation: "Operation Plato is the 'national identifier for the response to a marauding terrorist attack (MTA)'. [cite: 6]"
+                    explanation: "Operation Plato is the 'national identifier for the response to a marauding terrorist attack (MTA)'."
                 },
                 {
                     question: "Which of these is a listed type of 'Rising Tide' major incident?",
@@ -597,7 +599,7 @@
                         "A fire within an organization"
                     ],
                     correctAnswerIndex: 1,
-                    [cite_start]explanation: "A 'Rising Tide' incident can include 'a developing epidemic, or staffing crisis'. [cite: 6]"
+                    explanation: "A 'Rising Tide' incident can include 'a developing epidemic, or staffing crisis'."
                 },
                 {
                     question: "Which type of CBRN(e) agent is associated with symptoms like fever, shortness of breath, and chest infection?",
@@ -608,7 +610,7 @@
                         "Nuclear Material"
                     ],
                     correctAnswerIndex: 1,
-                    [cite_start]explanation: "Biological agent symptoms include Fever, Shortness of breath, and Chest infection. [cite: 5]"
+                    explanation: "Biological agent symptoms include Fever, Shortness of breath, and Chest infection."
                 },
                 {
                     question: "Initial signs of exposure to a Radiological Agent often include:",
@@ -619,7 +621,7 @@
                         "Sudden death with no prior symptoms"
                     ],
                     correctAnswerIndex: 2,
-                    [cite_start]explanation: "Initial signs of radiation exposure include Nausea & vomiting, Loss of appetite, and Malaise. [cite: 5]"
+                    explanation: "Initial signs of radiation exposure include Nausea & vomiting, Loss of appetite, and Malaise."
                 },
                 {
                     question: "Which route of entry for hazardous substances involves breathing it in?",
@@ -630,7 +632,7 @@
                         "Wound Absorption"
                     ],
                     correctAnswerIndex: 2,
-                    [cite_start]explanation: "Inhalation involves breathing in the substance. [cite: 5]"
+                    explanation: "Inhalation involves breathing in the substance."
                 },
                 {
                     question: "What is a potential effect of poor practice when dealing with hazardous materials in the workplace?",
@@ -641,7 +643,7 @@
                         "Automatic hazard mitigation"
                     ],
                     correctAnswerIndex: 2,
-                    [cite_start]explanation: "Poor practice when dealing with hazardous materials can lead to potential negative consequences. [cite: 1]"
+                    explanation: "Poor practice when dealing with hazardous materials can lead to potential negative consequences."
                 },
                 {
                     question: "According to the documents, what is important to consider regarding 'environmental factors' during scene assessment?",
@@ -652,7 +654,7 @@
                         "Only their financial impact"
                     ],
                     correctAnswerIndex: 2,
-                    [cite_start]explanation: "It is important to consider the 'impact of environmental factors on scene safety'. [cite: 1]"
+                    explanation: "It is important to consider the 'impact of environmental factors on scene safety'."
                 },
                 {
                     question: "The document highlights the importance of determining what 'early on in assessment' regarding patients?",
@@ -663,7 +665,7 @@
                         "Their preferred hospital"
                     ],
                     correctAnswerIndex: 2,
-                    [cite_start]explanation: "It is important to determine 'patient numbers early on in assessment'. [cite: 1]"
+                    explanation: "It is important to determine 'patient numbers early on in assessment'."
                 },
                 {
                     question: "What does the 'E' in CBRN(e) specifically refer to as a deliberate release?",
@@ -674,7 +676,7 @@
                         "Evacuation"
                     ],
                     correctAnswerIndex: 1,
-                    [cite_start]explanation: "The 'e' in CBRN(e) refers to '(e)xplosive Material' as a deliberate release. [cite: 5]"
+                    explanation: "The 'e' in CBRN(e) refers to '(e)xplosive Material' as a deliberate release."
                 },
                 {
                     question: "Which of the following is NOT a type of major incident listed in the 'Introduction to Major Incidents' document?",
@@ -685,7 +687,7 @@
                         "Cloud on the Horizon"
                     ],
                     correctAnswerIndex: 2,
-                    [cite_start]explanation: "Types of Major Incidents listed include Big Bang, Rising Tide, Cloud on the Horizon, Headline News, Internal Incidents, CBRN, HAZMAT, Mass Casualties, and Operation Plato. [cite: 6]"
+                    explanation: "Types of Major Incidents listed include Big Bang, Rising Tide, Cloud on the Horizon, Headline News, Internal Incidents, CBRN, HAZMAT, Mass Casualties, and Operation Plato."
                 },
                 {
                     question: "What is one of the key responsibilities of Police at a HazMat/CBRN(e) incident?",
@@ -696,7 +698,7 @@
                         "Clinical decontamination"
                     ],
                     correctAnswerIndex: 2,
-                    [cite_start]explanation: "Police responsibilities include 'Crime scene - perpetrators' and 'Cordoning'. [cite: 5]"
+                    explanation: "Police responsibilities include 'Crime scene - perpetrators' and 'Cordoning'."
                 },
                 {
                     question: "What is one of the key responsibilities of Fire & Rescue Service at a HazMat/CBRN(e) incident?",
@@ -707,7 +709,7 @@
                         "Lead on decontamination of non-ambulatory patients"
                     ],
                     correctAnswerIndex: 1,
-                    [cite_start]explanation: "Fire & Rescue Service responsibilities include 'Search and rescue' and 'Mass decontamination - NHS Support'. [cite: 5]"
+                    explanation: "Fire & Rescue Service responsibilities include 'Search and rescue' and 'Mass decontamination - NHS Support'."
                 },
                 {
                     question: "What kind of incidents are LGV/HVG, Coach/Bus, and Electric Vehicle RTC’s considered?",
@@ -718,7 +720,7 @@
                         "Internal Incidents"
                     ],
                     correctAnswerIndex: 2,
-                    [cite_start]explanation: "LGV/HVG, Coach/Bus, and Electric Vehicle RTC’s are considered 'Special Circumstance RTC’s'. [cite: 7]"
+                    explanation: "LGV/HVG, Coach/Bus, and Electric Vehicle RTC’s are considered 'Special Circumstance RTC’s'."
                 },
                 {
                     question: "What is the meaning of 'IOR' in the context of Ambulance Response to HazMat / CBRN(e) Incidents?",
@@ -729,7 +731,7 @@
                         "International Organization for Rescue"
                     ],
                     correctAnswerIndex: 1,
-                    [cite_start]explanation: "IOR stands for Initial Operational Response. [cite: 5]"
+                    explanation: "IOR stands for Initial Operational Response."
                 },
                 {
                     question: "Which type of blast injury is caused by the impact of the over-pressurization wave on body surfaces?",
@@ -740,7 +742,7 @@
                         "Quaternary"
                     ],
                     correctAnswerIndex: 2,
-                    [cite_start]explanation: "Primary blast injuries are 'Due to high-order explosives' and 'Impact of over pressurisation wave on body surfaces'. [cite: 5]"
+                    explanation: "Primary blast injuries are 'Due to high-order explosives' and 'Impact of over pressurisation wave on body surfaces'."
                 },
                 {
                     question: "Blast injuries due to flying debris, bomb fragments, or other projectiles are classified as what type?",
@@ -751,7 +753,7 @@
                         "Quaternary"
                     ],
                     correctAnswerIndex: 1,
-                    [cite_start]explanation: "Secondary blast injuries are 'Due to flying debris, bomb fragments, other projectiles'. [cite: 5]"
+                    explanation: "Secondary blast injuries are 'Due to flying debris, bomb fragments, other projectiles'."
                 },
                 {
                     question: "If individuals are thrown by blast winds, what type of blast injury is sustained?",
@@ -762,7 +764,7 @@
                         "Quaternary"
                     ],
                     correctAnswerIndex: 2,
-                    [cite_start]explanation: "Tertiary blast injuries are 'Due to individuals being thrown by blast winds'. [cite: 5]"
+                    explanation: "Tertiary blast injuries are 'Due to individuals being thrown by blast winds'."
                 },
                 {
                     question: "What type of blast injury includes exacerbations/complications of pre-existing illnesses or injuries not due to primary, secondary, or tertiary mechanisms?",
@@ -773,7 +775,7 @@
                         "Quaternary"
                     ],
                     correctAnswerIndex: 3,
-                    [cite_start]explanation: "Quaternary blast injuries include 'any explosion-related injury, illness, or disease not due to primary, secondary, or tertiary mechanisms'. [cite: 5]"
+                    explanation: "Quaternary blast injuries include 'any explosion-related injury, illness, or disease not due to primary, secondary, or tertiary mechanisms'."
                 },
                 {
                     question: "What does 'EPRR' stand for in the context of major incidents?",
@@ -784,7 +786,7 @@
                         "Emergency Preparedness, Resilience and Response"
                     ],
                     correctAnswerIndex: 3,
-                    [cite_start]explanation: "EPRR stands for Emergency Preparedness, Resilience and Response. [cite: 4]"
+                    explanation: "EPRR stands for Emergency Preparedness, Resilience and Response."
                 },
                 {
                     question: "Which is a listed objective for 'Working in Hazardous Environments'?",
@@ -795,7 +797,7 @@
                         "To delegate all risk to external agencies"
                     ],
                     correctAnswerIndex: 2,
-                    [cite_start]explanation: "An objective is to 'improve awareness of the risk when working: Transport Incidents'. [cite: 7]"
+                    explanation: "An objective is to 'improve awareness of the risk when working: Transport Incidents'."
                 },
                 {
                     question: "What distinguishes a 'Cloud on the Horizon' type of major incident?",
@@ -806,7 +808,7 @@
                         "It's a local internal incident."
                     ],
                     correctAnswerIndex: 2,
-                    [cite_start]explanation: "A 'Cloud on the Horizon' is 'a serious threat such as a significant chemical or nuclear release'. [cite: 6]"
+                    explanation: "A 'Cloud on the Horizon' is 'a serious threat such as a significant chemical or nuclear release'."
                 },
                 {
                     question: "What kind of major incident involves public or media alarm about an impending situation?",
@@ -817,7 +819,7 @@
                         "Internal Incident"
                     ],
                     correctAnswerIndex: 2,
-                    [cite_start]explanation: "A 'Headline News' incident involves 'public or media alarm about an impending situation'. [cite: 6]"
+                    explanation: "A 'Headline News' incident involves 'public or media alarm about an impending situation'."
                 },
                 {
                     question: "What is an 'Internal Incident' in the context of major incidents?",
@@ -828,7 +830,7 @@
                         "A large-scale public gathering"
                     ],
                     correctAnswerIndex: 2,
-                    [cite_start]explanation: "Internal Incidents include 'fire, breakdown of utilities or violent crime' within an organization. [cite: 6]"
+                    explanation: "Internal Incidents include 'fire, breakdown of utilities or violent crime' within an organization."
                 },
                 {
                     question: "What is the recommended action for patients during a CBRN(e) release to manage their exposure?",
@@ -839,7 +841,7 @@
                         "Wait for specialist decontamination teams before moving"
                     ],
                     correctAnswerIndex: 1,
-                    [cite_start]explanation: "Own role in the management of a CBRN(e) release includes encouraging patients to 'Move to a safe area' and 'Remove contaminated clothing'. [cite: 2]"
+                    explanation: "Own role in the management of a CBRN(e) release includes encouraging patients to 'Move to a safe area' and 'Remove contaminated clothing'."
                 },
                 {
                     question: "What is a potential health effect of hazardous materials via 'routes of entry'?",
@@ -850,7 +852,7 @@
                         "Enhanced cognitive abilities"
                     ],
                     correctAnswerIndex: 2,
-                    [cite_start]explanation: "Hazardous materials have potential effects on health depending on their type and route of entry. [cite: 1]"
+                    explanation: "Potential consequences for health and safety are highlighted, implying specific effects depending on the substance and route of entry."
                 },
                 {
                     question: "What information must be provided on the label of hazardous materials and substances?",
@@ -861,7 +863,7 @@
                         "The price of the material"
                     ],
                     correctAnswerIndex: 1,
-                    [cite_start]explanation: "Labels on hazardous materials must provide information as outlined by current legislation. [cite: 1]"
+                    explanation: "Labels on hazardous materials must provide detailed information about the hazard, as outlined by current legislation."
                 },
                 {
                     question: "What does the provided documentation indicate about 'nerve agent antidotes'?",
@@ -872,7 +874,7 @@
                         "They are only available at hospitals."
                     ],
                     correctAnswerIndex: 1,
-                    [cite_start]explanation: "The use of 'nerve agent antidotes' is outlined within the management of major incidents, specifically CBRN(e) incidents. [cite: 2]"
+                    explanation: "The use of 'nerve agent antidotes' is outlined within the management of major incidents, specifically CBRN(e) incidents."
                 },
                 {
                     question: "What is a characteristic of 'Sudden Onset' CBRN(e) events?",
@@ -883,7 +885,7 @@
                         "May go unrecognised"
                     ],
                     correctAnswerIndex: 2,
-                    [cite_start]explanation: "Sudden Onset events are 'More likely with chemical' and 'Includes bombs within CBRN'. [cite: 5]"
+                    explanation: "Sudden Onset events are 'More likely with chemical' and 'Includes bombs within CBRN'."
                 },
                 {
                     question: "What is a characteristic of 'Slowly Evolving (Emerging)' CBRN(e) events?",
@@ -894,7 +896,7 @@
                         "Rapid unconsciousness"
                     ],
                     correctAnswerIndex: 2,
-                    [cite_start]explanation: "Slowly Evolving events 'May go unrecognised' and 'May be mistaken for natural cause (food poisoning)'. [cite: 5]"
+                    explanation: "Slowly Evolving events 'May go unrecognised' and 'May be mistaken for natural cause (food poisoning)'."
                 },
                 {
                     question: "What are the effects of hydrogen sulphide at concentrations of 700-1000 ppm?",
@@ -905,7 +907,7 @@
                         "Prolonged exposure may cause nausea"
                     ],
                     correctAnswerIndex: 2,
-                    [cite_start]explanation: "At 700-1000 ppm, hydrogen sulphide causes 'Rapid unconsciousness, 'knockdown' or immediate collapse within 1 to 2 breaths, breathing stops, death within minutes'. [cite: 5]"
+                    explanation: "At 700-1000 ppm, hydrogen sulphide causes 'Rapid unconsciousness, 'knockdown' or immediate collapse within 1 to 2 breaths, breathing stops, death within minutes'."
                 },
                 {
                     question: "What is the recommended action for rescuers concerning unresponsive patients in a hydrogen sulphide incident?",
@@ -916,7 +918,7 @@
                         "Provide immediate mouth-to-mouth resuscitation"
                     ],
                     correctAnswerIndex: 1,
-                    [cite_start]explanation: "Patient retrieval 'Should not be attempted unless by HART/Fire Service in appropriate PPE'. [cite: 5]"
+                    explanation: "Patient retrieval 'Should not be attempted unless by HART/Fire Service in appropriate PPE'."
                 },
                 {
                     question: "What is a clinical sign/symptom of Fentanyl & Carfentanil toxicity and overdose?",
@@ -927,7 +929,7 @@
                         "Increased energy levels"
                     ],
                     correctAnswerIndex: 2,
-                    [cite_start]explanation: "Signs and symptoms of Fentanyl & Carfentanil toxicity and overdose include 'Pinpoint (constricted) pupils'. [cite: 5]"
+                    explanation: "Signs and symptoms of Fentanyl & Carfentanil toxicity and overdose include 'Pinpoint (constricted) pupils'."
                 },
                 {
                     question: "According to the 'Working in Hazardous Environments' document, what does 'A floating body in the water is not immediately a ROLE' imply?",
@@ -938,7 +940,7 @@
                         "It indicates the body is already deceased and no action is needed."
                     ],
                     correctAnswerIndex: 2,
-                    [cite_start]explanation: "A floating body in the water is not immediately a ROLE; progression depends on weather, age, and medical history. [cite: 7]"
+                    explanation: "A floating body in the water is not immediately a ROLE; progression depends on weather, age, and medical history."
                 },
                 {
                     question: "Which route of entry for hazardous substances involves ingesting or eating/drinking the material?",
@@ -949,7 +951,7 @@
                         "Eyes"
                     ],
                     correctAnswerIndex: 1,
-                    [cite_start]explanation: "Ingestion is a route of exposure when hazardous substances are eaten or drunk. [cite: 5]"
+                    explanation: "Ingestion is a route of exposure when hazardous substances are eaten or drunk."
                 },
                 {
                     question: "Which of the following is an example of 'Inoculation' as a route of entry for hazardous substances?",
@@ -960,7 +962,7 @@
                         "Swallowing contaminated water"
                     ],
                     correctAnswerIndex: 2,
-                    [cite_start]explanation: "Inoculation involves percutaneous entry through the skin, or via needles/bites/pellets. [cite: 5]"
+                    explanation: "Inoculation involves percutaneous entry through the skin, or via needles/bites/pellets."
                 },
                 {
                     question: "What symptom is typically associated with Blistering agents like Mustard Gas?",
@@ -971,7 +973,7 @@
                         "Diarrhoea and fever"
                     ],
                     correctAnswerIndex: 1,
-                    [cite_start]explanation: "Blistering agents can cause 'Pulmonary oedema and haemorrhage Rash and skin blistering'. [cite: 5]"
+                    explanation: "Blistering agents can cause 'Pulmonary oedema and haemorrhage Rash and skin blistering'."
                 },
                 {
                     question: "Choking agents such as Chlorine and Phosgene primarily affect which body system?",
@@ -982,7 +984,7 @@
                         "Nervous system"
                     ],
                     correctAnswerIndex: 2,
-                    [cite_start]explanation: "Choking agents cause 'Upper airway distress' and can lead to 'Fatal pulmonary oedema'. [cite: 5]"
+                    explanation: "Choking agents cause 'Upper airway distress' and can lead to 'Fatal pulmonary oedema'."
                 },
                 {
                     question: "Which of the following describes a key principle for responders when dealing with HazMat/CBRN incidents, as per the documents?",
@@ -993,7 +995,7 @@
                         "Withhold information from the control room until the scene is fully clear."
                     ],
                     correctAnswerIndex: 1,
-                    [cite_start]explanation: "Responders must 'Use caution and keep a safe distance to avoid exposure to themselves'. [cite: 5]"
+                    explanation: "Responders must 'Use caution and keep a safe distance to avoid exposure to themselves'."
                 },
                 {
                     question: "What is a core responsibility of Ambulance services during a major incident, as per the revision list?",
@@ -1004,165 +1006,168 @@
                         "The NHS lead on decontamination of non-ambulatory patients."
                     ],
                     correctAnswerIndex: 3,
-                    [cite_start]explanation: "The NHS leads on decontamination of non-ambulatory patients during a HazMat/CBRN(e) incident. [cite: 5]"
+                    explanation: "The NHS leads on decontamination of non-ambulatory patients during a HazMat/CBRN(e) incident, which is a core responsibility."
                 }
-
             ];
 
-            // Function to shuffle an array (Fisher-Yates algorithm)
             function shuffleArray(array) {
                 for (let i = array.length - 1; i > 0; i--) {
                     const j = Math.floor(Math.random() * (i + 1));
-                    [array[i], array[j]] = [array[j], array[i]];
+                    [array[i], array[j]] = [array[j], array[i]]; // Swap elements
                 }
-                return array;
             }
 
-            // Function to start the quiz
-            function startQuiz() {
-                questions = shuffleArray([...allQuestions]); // Shuffle a copy of all questions
-                startScreen.classList.add('hidden');
-                gameScreen.classList.remove('hidden');
+            function startGame() {
+                shuffleArray(allQuestions); // Shuffle all questions at the start
+                questions = allQuestions; // Assign shuffled questions to the active set
                 currentQuestionIndex = 0;
                 score = 0;
-                answeredQuestions.clear(); // Clear previous answers
-                totalQuestionsSpan.textContent = questions.length;
-                loadQuestion();
+                answeredQuestionsState.clear(); // Clear previous session's answers
+
+                startScreen.classList.add('hidden');
+                gameScreen.classList.remove('hidden');
+                endScreen.classList.add('hidden');
+
+                displayQuestion(currentQuestionIndex);
             }
 
-            // Function to load a question
-            function loadQuestion() {
-                questionAnswered = false;
-                resetButtons();
-                explanationDiv.style.display = 'none'; // Hide explanation for new question
-                feedbackMessage.textContent = ''; // Clear feedback
+            function displayQuestion(index) {
+                if (index < 0 || index >= questions.length) {
+                    endGame();
+                    return;
+                }
 
-                // Update navigation button states
-                prevQuestionBtn.disabled = (currentQuestionIndex === 0);
-                nextQuestionBtn.disabled = false; // Enable next, will be disabled after answer if no more questions
+                currentQuestionIndex = index;
+                const questionData = questions[currentQuestionIndex];
 
-                if (currentQuestionIndex < questions.length) {
-                    const currentQuestion = questions[currentQuestionIndex];
-                    questionNumberSpan.textContent = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
-                    questionText.textContent = currentQuestion.question;
+                questionNumberSpan.textContent = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+                questionText.textContent = questionData.question;
 
-                    const answerButtons = answerButtonsContainer.querySelectorAll('.answer-btn');
-                    answerButtons.forEach((button, index) => {
-                        button.textContent = currentQuestion.options[index];
-                        button.onclick = () => selectAnswer(index);
+                answerButtonsContainer.innerHTML = ''; // Clear previous buttons
+                questionData.options.forEach((option, i) => {
+                    const button = document.createElement('button');
+                    button.classList.add('btn', 'answer-btn');
+                    button.textContent = option;
+                    button.dataset.answerIndex = i;
+                    button.addEventListener('click', () => selectAnswer(i));
+                    answerButtonsContainer.appendChild(button);
+                });
 
-                        // If already answered, show selected and correct state
-                        if (answeredQuestions.has(currentQuestionIndex)) {
-                            const ansData = answeredQuestions.get(currentQuestionIndex);
-                            button.disabled = true; // Disable if already answered
-                            if (index === ansData.selected) {
-                                button.classList.add(ansData.correct ? 'correct' : 'incorrect');
-                            }
-                            // Show the correct answer if the previously selected answer was incorrect
-                            if (index === currentQuestion.correctAnswerIndex && !ansData.correct) {
-                                button.classList.add('correct');
-                            }
-                            feedbackMessage.textContent = ansData.correct ? "Correct!" : "Incorrect!";
-                            feedbackMessage.style.color = ansData.correct ? '#8BC34A' : '#EF5350';
-                            explanationDiv.textContent = `Explanation: ${currentQuestion.explanation}`;
-                            explanationDiv.style.display = 'block';
-                            questionAnswered = true; // Mark as answered to prevent re-answering
+                // Reset feedback and explanation
+                feedbackMessage.textContent = '';
+                explanationDiv.textContent = '';
+                explanationDiv.style.display = 'none';
+
+                // Re-enable all buttons and remove styling
+                const allAnswerBtns = answerButtonsContainer.querySelectorAll('.answer-btn');
+                allAnswerBtns.forEach(btn => {
+                    btn.disabled = false;
+                    btn.classList.remove('correct', 'incorrect');
+                });
+
+                // Check if this question was already answered and restore state
+                if (answeredQuestionsState.has(currentQuestionIndex)) {
+                    const state = answeredQuestionsState.get(currentQuestionIndex);
+                    allAnswerBtns.forEach(btn => {
+                        btn.disabled = true; // Disable all if already answered
+                        if (parseInt(btn.dataset.answerIndex) === state.selectedOptionIndex) {
+                            btn.classList.add(state.correct ? 'correct' : 'incorrect');
                         }
                     });
-                    if (currentQuestionIndex === questions.length - 1) {
-                        nextQuestionBtn.disabled = true;
-                    }
+                    // Show correct answer for review
+                    allAnswerBtns[questionData.correctAnswerIndex].classList.add('correct');
+                    feedbackMessage.textContent = state.correct ? 'Correct!' : 'Incorrect.';
+                    explanationDiv.textContent = questionData.explanation;
+                    explanationDiv.style.display = 'block';
+                    questionAnswered = true; // Mark as answered for navigation purposes
                 } else {
-                    endQuiz();
+                    questionAnswered = false; // Not yet answered
                 }
+                updateNavigationButtons();
             }
 
-            // Function to reset button styles and enable them
-            function resetButtons() {
-                const answerButtons = answerButtonsContainer.querySelectorAll('.answer-btn');
-                answerButtons.forEach(button => {
-                    button.classList.remove('correct', 'incorrect');
-                    button.disabled = false;
-                });
-            }
-
-            // Function to handle answer selection
             function selectAnswer(selectedIndex) {
-                if (questionAnswered) return; // Prevent multiple answers
+                if (questionAnswered) return; // Prevent answering again
+
                 questionAnswered = true;
+                const questionData = questions[currentQuestionIndex];
+                const isCorrect = (selectedIndex === questionData.correctAnswerIndex);
 
-                const currentQuestion = questions[currentQuestionIndex];
-                const answerButtons = answerButtonsContainer.querySelectorAll('.answer-btn');
-                const correctButton = answerButtons[currentQuestion.correctAnswerIndex];
-                const selectedButton = answerButtons[selectedIndex];
-
-                answerButtons.forEach(button => {
-                    button.disabled = true; // Disable all answer buttons after selection
+                const allAnswerBtns = answerButtonsContainer.querySelectorAll('.answer-btn');
+                allAnswerBtns.forEach(btn => {
+                    btn.disabled = true; // Disable all buttons after an answer is selected
+                    if (parseInt(btn.dataset.answerIndex) === selectedIndex) {
+                        btn.classList.add(isCorrect ? 'correct' : 'incorrect');
+                    }
                 });
 
-                let isCorrect = false;
-                if (selectedIndex === currentQuestion.correctAnswerIndex) {
+                // Always show the correct answer
+                allAnswerBtns[questionData.correctAnswerIndex].classList.add('correct');
+
+                if (isCorrect) {
                     score++;
-                    selectedButton.classList.add('correct');
-                    feedbackMessage.textContent = "Correct!";
-                    feedbackMessage.style.color = '#8BC34A';
-                    isCorrect = true;
+                    feedbackMessage.textContent = 'Correct!';
                 } else {
-                    selectedButton.classList.add('incorrect');
-                    correctButton.classList.add('correct'); // Show the correct answer
-                    feedbackMessage.textContent = "Incorrect!";
-                    feedbackMessage.style.color = '#EF5350';
+                    feedbackMessage.textContent = 'Incorrect.';
                 }
 
-                // Store the answer for navigation
-                answeredQuestions.set(currentQuestionIndex, { selected: selectedIndex, correct: isCorrect });
-
-                explanationDiv.textContent = `Explanation: ${currentQuestion.explanation}`;
+                explanationDiv.textContent = questionData.explanation;
                 explanationDiv.style.display = 'block';
 
-                // Automatically move to next question after a delay if not the last question
-                if (currentQuestionIndex < questions.length - 1) {
-                    setTimeout(() => {
-                        currentQuestionIndex++;
-                        loadQuestion();
-                    }, 5000); // Wait 5 seconds before moving to next
+                // Store the answer state
+                answeredQuestionsState.set(currentQuestionIndex, {
+                    selectedOptionIndex: selectedIndex,
+                    correct: isCorrect,
+                    scoreAwarded: isCorrect ? 1 : 0
+                });
+                
+                updateNavigationButtons();
+            }
+
+            function updateNavigationButtons() {
+                prevQuestionBtn.disabled = currentQuestionIndex === 0;
+                nextQuestionBtn.disabled = false; // Enable by default, disable at end
+
+                if (currentQuestionIndex === questions.length - 1) {
+                    nextQuestionBtn.textContent = 'Finish Quiz';
                 } else {
-                    // If it's the last question, just display feedback and explanation
-                    nextQuestionBtn.disabled = true; // Disable next button at the end
-                    setTimeout(endQuiz, 5000); // End quiz after delay
+                    nextQuestionBtn.textContent = 'Next';
                 }
             }
 
-            // Function to end the quiz and show final score
-            function endQuiz() {
+            function handleNextQuestion() {
+                if (currentQuestionIndex < questions.length - 1) {
+                    displayQuestion(currentQuestionIndex + 1);
+                } else {
+                    endGame();
+                }
+            }
+
+            function handlePreviousQuestion() {
+                if (currentQuestionIndex > 0) {
+                    displayQuestion(currentQuestionIndex - 1);
+                }
+            }
+
+            function endGame() {
                 gameScreen.classList.add('hidden');
                 endScreen.classList.remove('hidden');
-                finalScoreSpan.textContent = score;
+                
+                // Recalculate final score based on answeredQuestionsState
+                let finalScore = 0;
+                answeredQuestionsState.forEach(state => {
+                    finalScore += state.scoreAwarded;
+                });
+
+                finalScoreSpan.textContent = finalScore;
                 totalQuestionsSpan.textContent = questions.length;
             }
 
-            // Navigation button event listeners
-            prevQuestionBtn.addEventListener('click', () => {
-                if (currentQuestionIndex > 0) {
-                    currentQuestionIndex--;
-                    loadQuestion();
-                }
-            });
-
-            nextQuestionBtn.addEventListener('click', () => {
-                // Only move to the next question if it's not the last one
-                if (currentQuestionIndex < questions.length - 1) {
-                    currentQuestionIndex++;
-                    loadQuestion();
-                } else {
-                    // If it's the last question, clicking next should end the quiz
-                    endQuiz();
-                }
-            });
-
-            // Initial setup - attach event listeners to start and restart buttons
-            startQuizBtn.addEventListener('click', startQuiz);
-            restartQuizBtn.addEventListener('click', startQuiz);
+            // Event Listeners
+            startQuizBtn.addEventListener('click', startGame);
+            restartQuizBtn.addEventListener('click', startGame);
+            nextQuestionBtn.addEventListener('click', handleNextQuestion);
+            prevQuestionBtn.addEventListener('click', handlePreviousQuestion);
         });
         /* --- End JavaScript --- */
     </script>

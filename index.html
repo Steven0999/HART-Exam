@@ -1,1 +1,390 @@
-HTML FILE HERE
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Conditions Quiz - Kahoot Style</title>
+    <style>
+        /* --- CSS for the Quiz Interface --- */
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #4CAF50, #2196F3); /* Kahoot-like gradient */
+            color: white;
+            overflow-y: auto; /* Allow scrolling for smaller screens */
+        }
+
+        .quiz-container {
+            background-color: rgba(0, 0, 0, 0.6);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            text-align: center;
+            width: 90%;
+            max-width: 700px;
+            position: relative; /* For positioning navigation buttons */
+            margin: 20px auto; /* Add some margin for better spacing on all screens */
+        }
+
+        .screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .screen.hidden {
+            display: none;
+        }
+
+        h1, h2 {
+            margin-bottom: 25px;
+            color: #FFEB3B; /* Yellow for titles */
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .btn {
+            background-color: #FFC107; /* Orange/Yellow button */
+            color: #333;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%; /* For start/restart buttons */
+            max-width: 300px;
+        }
+
+        .btn:hover {
+            background-color: #FFD54F;
+            transform: translateY(-2px);
+        }
+
+        .answer-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Two columns */
+            grid-gap: 15px;
+            width: 100%;
+        }
+
+        .answer-btn {
+            min-height: 80px; /* Make buttons larger for touch */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            word-wrap: break-word; /* Allow long text to wrap */
+            white-space: normal; /* Ensure text wraps */
+        }
+
+        /* Specific colors for Kahoot-like answer buttons */
+        .answer-btn:nth-child(1) { background-color: #F44336; color: white; } /* Red */
+        .answer-btn:nth-child(2) { background-color: #4CAF50; color: white; } /* Green */
+        .answer-btn:nth-child(3) { background-color: #2196F3; color: white; } /* Blue */
+        .answer-btn:nth-child(4) { background-color: #FFEB3B; color: #333; } /* Yellow */
+
+        .answer-btn.correct {
+            background-color: #8BC34A !important; /* Lighter green */
+            border: 3px solid white;
+        }
+
+        .answer-btn.incorrect {
+            background-color: #EF5350 !important; /* Lighter red */
+            border: 3px solid white;
+        }
+
+        #feedback-message {
+            margin-top: 20px;
+            font-size: 1.3em;
+            font-weight: bold;
+            min-height: 30px; /* Reserve space */
+        }
+
+        #explanation {
+            margin-top: 15px;
+            font-size: 1em;
+            color: #e0e0e0;
+            text-align: left;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            display: none; /* Hidden by default */
+        }
+
+        #final-score {
+            color: #FFEB3B;
+            font-size: 1.5em;
+        }
+
+        #total-questions {
+            color: #FFEB3B;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .navigation-buttons button {
+            flex: 1;
+            margin: 0 5px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .answer-grid {
+                grid-template-columns: 1fr; /* Stack buttons on small screens */
+            }
+            .quiz-container {
+                padding: 20px;
+                margin: 10px;
+            }
+            .btn {
+                padding: 12px 20px;
+                font-size: 1em;
+            }
+        }
+        /* --- End CSS --- */
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <div id="quiz-start-screen" class="screen">
+            <h1>Medical Conditions Quiz</h1>
+            <button id="start-quiz-btn" class="btn">Start Quiz</button>
+        </div>
+
+        <div id="quiz-game-screen" class="screen hidden">
+            <div class="header">
+                <div id="question-number">Question 1 of X</div>
+            </div>
+            <h2 id="question-text"></h2>
+            <div id="answer-buttons" class="answer-grid">
+                <button class="btn answer-btn" data-answer-index="0"></button>
+                <button class="btn answer-btn" data-answer-index="1"></button>
+                <button class="btn answer-btn" data-answer-index="2"></button>
+                <button class="btn answer-btn" data-answer-index="3"></button>
+            </div>
+            <div id="feedback-message"></div>
+            <div id="explanation"></div>
+            <div class="navigation-buttons">
+                <button id="prev-question-btn" class="btn">Previous</button>
+                <button id="next-question-btn" class="btn">Next</button>
+            </div>
+        </div>
+
+        <div id="quiz-end-screen" class="screen hidden">
+            <h2>Quiz Complete!</h2>
+            <p>You scored: <span id="final-score">0</span> out of <span id="total-questions">0</span></p>
+            <button id="restart-quiz-btn" class="btn">Play Again</button>
+        </div>
+    </div>
+
+    <script>
+        /* --- JavaScript for Quiz Logic --- */
+        document.addEventListener('DOMContentLoaded', () => {
+            const startScreen = document.getElementById('quiz-start-screen');
+            const gameScreen = document.getElementById('quiz-game-screen');
+            const endScreen = document.getElementById('quiz-end-screen');
+
+            const startQuizBtn = document.getElementById('start-quiz-btn');
+            const restartQuizBtn = document.getElementById('restart-quiz-btn');
+            const prevQuestionBtn = document.getElementById('prev-question-btn');
+            const nextQuestionBtn = document.getElementById('next-question-btn');
+
+            const questionNumberSpan = document.getElementById('question-number');
+            const questionText = document.getElementById('question-text');
+            const answerButtonsContainer = document.getElementById('answer-buttons');
+            const feedbackMessage = document.getElementById('feedback-message');
+            const explanationDiv = document.getElementById('explanation');
+            const finalScoreSpan = document.getElementById('final-score');
+            const totalQuestionsSpan = document.getElementById('total-questions');
+
+            let questions = []; // This will hold the shuffled questions for the current quiz session
+            let currentQuestionIndex = 0;
+            let score = 0;
+            let questionAnswered = false; // Flag to prevent multiple answers per question
+            const answeredQuestions = new Map(); // To store answers and whether they were correct {index: {selected: 1, correct: true}}
+
+            // --- ALL QUIZ QUESTIONS ---
+            // These questions are derived from the provided presentation materials,
+            // focusing on risk factors, symptoms, categories, red flags, and management.
+            const allQuestions = [
+
+            ];
+
+            // Function to shuffle an array (Fisher-Yates algorithm)
+            function shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                return array;
+            }
+
+            // Function to start the quiz
+            function startQuiz() {
+                questions = shuffleArray([...allQuestions]); // Shuffle a copy of all questions
+                startScreen.classList.add('hidden');
+                gameScreen.classList.remove('hidden');
+                currentQuestionIndex = 0;
+                score = 0;
+                answeredQuestions.clear(); // Clear previous answers
+                totalQuestionsSpan.textContent = questions.length;
+                loadQuestion();
+            }
+
+            // Function to load a question
+            function loadQuestion() {
+                questionAnswered = false;
+                resetButtons();
+                explanationDiv.style.display = 'none'; // Hide explanation for new question
+                feedbackMessage.textContent = ''; // Clear feedback
+
+                // Update navigation button states
+                prevQuestionBtn.disabled = (currentQuestionIndex === 0);
+                nextQuestionBtn.disabled = false; // Enable next, will be disabled after answer if no more questions
+
+                if (currentQuestionIndex < questions.length) {
+                    const currentQuestion = questions[currentQuestionIndex];
+                    questionNumberSpan.textContent = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+                    questionText.textContent = currentQuestion.question;
+
+                    const answerButtons = answerButtonsContainer.querySelectorAll('.answer-btn');
+                    answerButtons.forEach((button, index) => {
+                        button.textContent = currentQuestion.options[index];
+                        button.onclick = () => selectAnswer(index);
+
+                        // If already answered, show selected and correct state
+                        if (answeredQuestions.has(currentQuestionIndex)) {
+                            const ansData = answeredQuestions.get(currentQuestionIndex);
+                            button.disabled = true; // Disable if already answered
+                            if (index === ansData.selected) {
+                                button.classList.add(ansData.correct ? 'correct' : 'incorrect');
+                            }
+                            // Show the correct answer if the previously selected answer was incorrect
+                            if (index === currentQuestion.correctAnswerIndex && !ansData.correct) {
+                                button.classList.add('correct');
+                            }
+                            feedbackMessage.textContent = ansData.correct ? "Correct!" : "Incorrect!";
+                            feedbackMessage.style.color = ansData.correct ? '#8BC34A' : '#EF5350';
+                            explanationDiv.textContent = `Explanation: ${currentQuestion.explanation}`;
+                            explanationDiv.style.display = 'block';
+                            questionAnswered = true; // Mark as answered to prevent re-answering
+                        }
+                    });
+                    if (currentQuestionIndex === questions.length - 1) {
+                        nextQuestionBtn.disabled = true;
+                    }
+                } else {
+                    endQuiz();
+                }
+            }
+
+            // Function to reset button styles and enable them
+            function resetButtons() {
+                const answerButtons = answerButtonsContainer.querySelectorAll('.answer-btn');
+                answerButtons.forEach(button => {
+                    button.classList.remove('correct', 'incorrect');
+                    button.disabled = false;
+                });
+            }
+
+            // Function to handle answer selection
+            function selectAnswer(selectedIndex) {
+                if (questionAnswered) return; // Prevent multiple answers
+                questionAnswered = true;
+
+                const currentQuestion = questions[currentQuestionIndex];
+                const answerButtons = answerButtonsContainer.querySelectorAll('.answer-btn');
+                const correctButton = answerButtons[currentQuestion.correctAnswerIndex];
+                const selectedButton = answerButtons[selectedIndex];
+
+                answerButtons.forEach(button => {
+                    button.disabled = true; // Disable all answer buttons after selection
+                });
+
+                let isCorrect = false;
+                if (selectedIndex === currentQuestion.correctAnswerIndex) {
+                    score++;
+                    selectedButton.classList.add('correct');
+                    feedbackMessage.textContent = "Correct!";
+                    feedbackMessage.style.color = '#8BC34A';
+                    isCorrect = true;
+                } else {
+                    selectedButton.classList.add('incorrect');
+                    correctButton.classList.add('correct'); // Show the correct answer
+                    feedbackMessage.textContent = "Incorrect!";
+                    feedbackMessage.style.color = '#EF5350';
+                }
+
+                // Store the answer for navigation
+                answeredQuestions.set(currentQuestionIndex, { selected: selectedIndex, correct: isCorrect });
+
+                explanationDiv.textContent = `Explanation: ${currentQuestion.explanation}`;
+                explanationDiv.style.display = 'block';
+
+                // Automatically move to next question after a delay if not the last question
+                if (currentQuestionIndex < questions.length - 1) {
+                    setTimeout(() => {
+                        currentQuestionIndex++;
+                        loadQuestion();
+                    }, 5000); // Wait 5 seconds before moving to next
+                } else {
+                    // If it's the last question, just display feedback and explanation
+                    nextQuestionBtn.disabled = true; // Disable next button at the end
+                    setTimeout(endQuiz, 5000); // End quiz after delay
+                }
+            }
+
+            // Function to end the quiz and show final score
+            function endQuiz() {
+                gameScreen.classList.add('hidden');
+                endScreen.classList.remove('hidden');
+                finalScoreSpan.textContent = score;
+                totalQuestionsSpan.textContent = questions.length;
+            }
+
+            // Navigation button event listeners
+            prevQuestionBtn.addEventListener('click', () => {
+                if (currentQuestionIndex > 0) {
+                    currentQuestionIndex--;
+                    loadQuestion();
+                }
+            });
+
+            nextQuestionBtn.addEventListener('click', () => {
+                // Only move to the next question if it's not the last one
+                if (currentQuestionIndex < questions.length - 1) {
+                    currentQuestionIndex++;
+                    loadQuestion();
+                } else {
+                    // If it's the last question, clicking next should end the quiz
+                    endQuiz();
+                }
+            });
+
+            // Initial setup - attach event listeners to start and restart buttons
+            startQuizBtn.addEventListener('click', startQuiz);
+            restartQuizBtn.addEventListener('click', startQuiz);
+        });
+        /* --- End JavaScript --- */
+    </script>
+</body>
+</html>

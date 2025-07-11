@@ -226,6 +226,783 @@
             // These questions are derived from the provided presentation materials,
             // focusing on risk factors, symptoms, categories, red flags, and management.
             const allQuestions = [
+                // Definitions
+                {
+                    question: "According to the provided documents, what defines a 'Major Incident'?",
+                    options: [
+                        "An event involving hundreds of patients.",
+                        "An event with minor consequences requiring standard procedures.",
+                        "An event or situation with a range of serious consequences requiring special arrangements by one or more emergency responder agency.",
+                        "An incident affecting only internal operations."
+                    ],
+                    correctAnswerIndex: 2,
+                    [cite_start]explanation: "A Major Incident is defined as 'An event or situation with a range of serious consequences which requires special arrangements to be implemented by one or more emergency responder agency.' [cite: 6]"
+                },
+                {
+                    question: "How many patients are typically involved in a 'Major Incident' according to the documents?",
+                    options: [
+                        "Hundreds of patients",
+                        "Tens of patients",
+                        "Thousands of patients",
+                        "Less than ten patients"
+                    ],
+                    correctAnswerIndex: 1,
+                    [cite_start]explanation: "A Major Incident typically involves 'Tens of patients'. [cite: 6]"
+                },
+                {
+                    question: "What is a 'Mass Casualty Incident' defined as in the provided materials?",
+                    options: [
+                        "Involving thousands of patients",
+                        "Involving a single patient with severe injuries",
+                        "Involving hundreds of patients",
+                        "An incident requiring only one emergency service"
+                    ],
+                    correctAnswerIndex: 2,
+                    [cite_start]explanation: "A Mass Casualty Incident is defined as 'Involving Hundreds of patients'. [cite: 6]"
+                },
+                {
+                    question: "An incident involving 'thousands of patients' is classified as what type of incident?",
+                    options: [
+                        "Major Incident",
+                        "Mass Casualty Incident",
+                        "Minor Incident",
+                        "Catastrophic Incident"
+                    ],
+                    correctAnswerIndex: 3,
+                    [cite_start]explanation: "An incident involving 'thousands of patients' is classified as a 'Catastrophic Incident'. [cite: 6]"
+                },
+                {
+                    question: "What is the key difference between a HazMat incident and a CBRN(e) incident?",
+                    options: [
+                        "HazMat involves only biological agents, CBRN(e) involves chemicals.",
+                        "HazMat is accidental, CBRN(e) is deliberate.",
+                        "HazMat is large-scale, CBRN(e) is small-scale.",
+                        "HazMat only occurs indoors, CBRN(e) occurs outdoors."
+                    ],
+                    correctAnswerIndex: 1,
+                    [cite_start]explanation: "A HazMat incident is an 'accidental slip or release of a Hazardous Material', while a CBRN(e) incident is the 'deliberate release' of specific agents. [cite: 5]"
+                },
+                {
+                    question: "Which of the following is NOT typically considered a 'HazMat Event' according to the provided information?",
+                    options: [
+                        "Large Fires",
+                        "Accidental chemical exposures",
+                        "Chemical spills from RTC's",
+                        "Deliberate release of a Chemical Agent"
+                    ],
+                    correctAnswerIndex: 3,
+                    explanation: "The deliberate release of a Chemical Agent falls under CBRN(e), not HazMat. [cite_start]HazMat events are accidental. [cite: 5]"
+                },
+                {
+                    question: "What does the 'C' in CBRN(e) stand for?",
+                    options: [
+                        "Contamination",
+                        "Chemical",
+                        "Critical",
+                        "Catastrophic"
+                    ],
+                    correctAnswerIndex: 1,
+                    [cite_start]explanation: "CBRN(e) stands for Chemical, Biological, Radiological, Nuclear, and (e)xplosive Material. [cite: 5]"
+                },
+                {
+                    question: "What does the 'e' in CBRN(e) stand for?",
+                    options: [
+                        "Emergency",
+                        "Environmental",
+                        "Explosive",
+                        "Exposure"
+                    ],
+                    correctAnswerIndex: 2,
+                    [cite_start]explanation: "The 'e' in CBRN(e) stands for '(e)xplosive Material'. [cite: 5]"
+                },
+
+                // Mnemonics
+                {
+                    question: "Which mnemonic is used for constructing a report for major incidents, including details like what happened and patient numbers?",
+                    options: [
+                        "CRESS",
+                        "R-A-R",
+                        "METHANE",
+                        "BAD COLDS"
+                    ],
+                    correctAnswerIndex: 2,
+                    [cite_start]explanation: "METHANE is the mnemonic used for constructing a report, asking questions like 'What happened?' and 'How many patients?'. [cite: 3]"
+                },
+                {
+                    question: "The METHANE report should include what information regarding patients?",
+                    options: [
+                        "Their names and addresses",
+                        "How many patients and what you would expect their injuries and priorities to be",
+                        "Their medical history prior to the incident",
+                        "Their next of kin contact details"
+                    ],
+                    correctAnswerIndex: 1,
+                    [cite_start]explanation: "The METHANE report includes 'How many patients and what would you expect their injuries and priorities to be?'. [cite: 3]"
+                },
+                {
+                    question: "In the context of the METHANE report, what question relates to inter-agency communication?",
+                    options: [
+                        "What is the weather like?",
+                        "What could you tell the other agencies in attendance?",
+                        "What is your personal opinion?",
+                        "What is the incident budget?"
+                    ],
+                    correctAnswerIndex: 1,
+                    [cite_start]explanation: "The METHANE report covers 'What could you tell the other agencies in attendance?' and 'What information would you like from other agencies?'. [cite: 3]"
+                },
+                {
+                    question: "Which of the following is a component of the 'RESCUE FORMULA' for water incidents?",
+                    options: [
+                        "SWIM",
+                        "SHOUT",
+                        "RUN",
+                        "WAIT"
+                    ],
+                    correctAnswerIndex: 1,
+                    [cite_start]explanation: "The RESCUE FORMULA includes SHOUT, REACH, THROW, ROW, GO AND TOW, HELO, DIVERT FLOW, NO GO. [cite: 7]"
+                },
+                {
+                    question: "Which of the following is one of the principles of the R-A-R mnemonic for Hazard Assessment?",
+                    options: [
+                        "Respond",
+                        "Recognise",
+                        "Report",
+                        "Reassure"
+                    ],
+                    correctAnswerIndex: 1,
+                    [cite_start]explanation: "R-A-R stands for RECOGNISE, ASSESS, REACT. [cite: 5]"
+                },
+                {
+                    question: "The CRESS tool is primarily used for what purpose in a hazardous substance incident?",
+                    options: [
+                        "To determine incident command structure",
+                        "To report back key information from casualties to identify the type and nature of the incident",
+                        "To manage logistics and resource allocation",
+                        "To provide immediate medical treatment"
+                    ],
+                    correctAnswerIndex: 1,
+                    [cite_start]explanation: "The CRESS tool helps health services identify the type and nature of the hazardous substance incident by reporting key information from casualties. [cite: 5]"
+                },
+                {
+                    question: "What is the primary function of the BAD COLDS tool?",
+                    options: [
+                        "To assist with patient decontamination",
+                        "To categorise and identify substances causing concern",
+                        "To manage media relations during an incident",
+                        "To provide psychological first aid"
+                    ],
+                    correctAnswerIndex: 1,
+                    [cite_start]explanation: "The BAD COLDS tool is used to support the categorisation and potential identification of substance(s) causing concern. [cite: 5]"
+                },
+
+                // Scene Management
+                {
+                    question: "According to the Scene Assessment revision list, what is important for maximizing safety for 'everyone on scene'?",
+                    options: [
+                        "Limiting the number of responders",
+                        "Ignoring environmental factors",
+                        "Dynamic risk assessment (DRA)",
+                        "Not establishing the presenting complaint early"
+                    ],
+                    correctAnswerIndex: 2,
+                    [cite_start]explanation: "Maximising safety for everyone on scene and dynamic risk assessment (DRA) are highlighted as important. [cite: 1]"
+                },
+                {
+                    question: "In scene assessment for trauma cases, what is it important to establish?",
+                    options: [
+                        "The patient's full medical history",
+                        "The Mechanism of Injury (MOI)",
+                        "The patient's insurance details",
+                        "The nearest hospital's bed availability"
+                    ],
+                    correctAnswerIndex: 1,
+                    [cite_start]explanation: "It is important to establish the Mechanism of Injury (MOI) in trauma cases. [cite: 1]"
+                },
+                {
+                    question: "Which cordon zone is described as requiring 'Specialist Responders'?",
+                    options: [
+                        "Cold Zone",
+                        "Warm Zone",
+                        "Hot Zone",
+                        "Green Zone"
+                    ],
+                    correctAnswerIndex: 2,
+                    [cite_start]explanation: "The Hot Zone is for 'Specialist Responders'. [cite: 5, 7]"
+                },
+                {
+                    question: "Which cordon zone is described as for 'Non Specialist's With Appropriate PPE'?",
+                    options: [
+                        "Hot Zone",
+                        "Cold Zone",
+                        "Warm Zone",
+                        "Red Zone"
+                    ],
+                    correctAnswerIndex: 2,
+                    [cite_start]explanation: "The Warm Zone is for 'Non Specialist's With Appropriate PPE'. [cite: 5, 7]"
+                },
+                {
+                    question: "What is the primary characteristic of the 'Cold Zone' in incident cordons?",
+                    options: [
+                        "Requires full hazmat suits",
+                        "No PPE required",
+                        "Strictly for casualties only",
+                        "Where initial triage takes place"
+                    ],
+                    correctAnswerIndex: 1,
+                    [cite_start]explanation: "The Cold Zone is characterized by 'No PPE' required. [cite: 5, 7]"
+                },
+                {
+                    question: "Emergency Responders should NOT cross which cordon into the Warm Zone under any circumstances?",
+                    options: [
+                        "Outer Cordon",
+                        "Inner Cordon",
+                        "Safety Cordon",
+                        "Green Cordon"
+                    ],
+                    correctAnswerIndex: 1,
+                    [cite_start]explanation: "Emergency Responders should 'Do Not Cross the Inner Cordon into the Warm Zone under any circumstances'. [cite: 5]"
+                },
+                {
+                    question: "What is the aim of triage?",
+                    options: [
+                        "To provide definitive medical treatment to all patients immediately.",
+                        "To transport all patients to the nearest hospital at once.",
+                        "To categorize patients based on the severity of their injuries and the likelihood of survival, prioritizing treatment.",
+                        "To determine the legal liability of the incident."
+                    ],
+                    correctAnswerIndex: 2,
+                    [cite_start]explanation: "Triage aims to categorize patients based on the severity of their injuries to prioritize treatment. [cite: 2]"
+                },
+                {
+                    question: "What are the two phases of triage mentioned in the documents?",
+                    options: [
+                        "Assessment and Treatment",
+                        "Triage Sieve and Triage Sort",
+                        "Initial and Secondary",
+                        "Hot and Cold"
+                    ],
+                    correctAnswerIndex: 1,
+                    [cite_start]explanation: "The two phases of triage are Triage Sieve and Triage Sort. [cite: 2]"
+                },
+                {
+                    question: "What are the primary objectives of the Initial Operational Response (IOR) to incidents involving hazardous substances or CBRN materials?",
+                    options: [
+                        "To conduct criminal investigations and gather evidence.",
+                        "To maximize media coverage and public relations.",
+                        "To maximize the safety of the public and save lives, minimize operational risk to responders, and ensure effective transition to Specialist Operational Response.",
+                        "To determine the financial cost of the incident."
+                    ],
+                    correctAnswerIndex: 2,
+                    [cite_start]explanation: "The primary objectives of IOR are to maximise public safety and save lives, minimise operational risk, and ensure effective transition to SOR. [cite: 5]"
+                },
+                {
+                    question: "What should always be in place for an Industry Confined Space according to the 'Working in Hazardous Environments' document?",
+                    options: [
+                        "A single rescuer",
+                        "A pre-arranged rescue and medical team",
+                        "A direct line to 999 for emergency entry",
+                        "No specific safety measures"
+                    ],
+                    correctAnswerIndex: 1,
+                    [cite_start]explanation: "An Industry Confined Space 'Should always have a pre arranged rescue and medical team'. [cite: 7]"
+                },
+                {
+                    question: "When responding on an airfield, what should responders wait for before proceeding?",
+                    options: [
+                        "All planes to land",
+                        "Permission from airport control tower only",
+                        "Escort Vehicles",
+                        "A green light from ground staff"
+                    ],
+                    correctAnswerIndex: 2,
+                    [cite_start]explanation: "When responding on an airfield, responders should 'Wait for your Escort Vehicles'. [cite: 7]"
+                },
+                {
+                    question: "Who has control of the scene at an aviation incident on an airfield?",
+                    options: [
+                        "The most senior paramedic",
+                        "The Captain of the aircraft",
+                        "Airport security",
+                        "The Fire & Rescue Incident Commander"
+                    ],
+                    correctAnswerIndex: 1,
+                    [cite_start]explanation: "The 'Captain of the aircraft has control' at an airfield incident. [cite: 7]"
+                },
+                {
+                    question: "Which type of RTC involves potential hazards from Lithium Ion Batteries?",
+                    options: [
+                        "LGV/HVG",
+                        "Coach / Bus",
+                        "Electric Vehicle RTC’s",
+                        "Armoured Vehicles"
+                    ],
+                    correctAnswerIndex: 2,
+                    [cite_start]explanation: "Electric Vehicle RTC’s involve potential hazards from Lithium Ion Batteries. [cite: 7]"
+                },
+                {
+                    question: "Who grants emergency access at Rail Incidents?",
+                    options: [
+                        "The Station Master",
+                        "Mobile Operations Manager (MOM)",
+                        "British Transport Police",
+                        "Network Rail Control"
+                    ],
+                    correctAnswerIndex: 1,
+                    [cite_start]explanation: "Emergency Access at Rail Incidents is granted by the Mobile Operations Manager – (MOM). [cite: 7]"
+                },
+                {
+                    question: "Which of the following is NOT listed as a potential hazard during water incidents?",
+                    options: [
+                        "Unstable Street Furniture",
+                        "Deceptive speed of water",
+                        "Bio Hazards",
+                        "Absence of current"
+                    ],
+                    correctAnswerIndex: 3,
+                    [cite_start]explanation: "Potential hazards during water incidents include Unstable Street Furniture, Deceptive speed of water, and Bio Hazards. [cite: 7]"
+                },
+                {
+                    question: "What type of decontamination involves patients removing contaminated clothing, with items categorised as 'Orange = Dirty' and 'Green = Clean'?",
+                    options: [
+                        "Dry Decontamination",
+                        "Improvised Wet Decontamination",
+                        "Clinical Decontamination - SORT",
+                        "Emergency Disrobe Packs"
+                    ],
+                    correctAnswerIndex: 3,
+                    [cite_start]explanation: "Emergency Disrobe Packs are used for patients to remove contaminated clothing, with 'Orange = Dirty' and 'Green = Clean' labels. [cite: 5]"
+                },
+
+                // Incident Types / Hazards
+                {
+                    question: "What is 'Operation Plato' identified as in the 'Introduction to Major Incidents' document?",
+                    options: [
+                        "A national exercise for floods",
+                        "A national identifier for the response to a marauding terrorist attack (MTA)",
+                        "A plan for managing internal incidents only",
+                        "A training program for CBRN response"
+                    ],
+                    correctAnswerIndex: 1,
+                    [cite_start]explanation: "Operation Plato is the 'national identifier for the response to a marauding terrorist attack (MTA)'. [cite: 6]"
+                },
+                {
+                    question: "Which of these is a listed type of 'Rising Tide' major incident?",
+                    options: [
+                        "A serious transport accident",
+                        "A developing epidemic",
+                        "A significant chemical release",
+                        "A fire within an organization"
+                    ],
+                    correctAnswerIndex: 1,
+                    [cite_start]explanation: "A 'Rising Tide' incident can include 'a developing epidemic, or staffing crisis'. [cite: 6]"
+                },
+                {
+                    question: "Which type of CBRN(e) agent is associated with symptoms like fever, shortness of breath, and chest infection?",
+                    options: [
+                        "Chemical Agent",
+                        "Biological Agent",
+                        "Radiological Agent",
+                        "Nuclear Material"
+                    ],
+                    correctAnswerIndex: 1,
+                    [cite_start]explanation: "Biological agent symptoms include Fever, Shortness of breath, and Chest infection. [cite: 5]"
+                },
+                {
+                    question: "Initial signs of exposure to a Radiological Agent often include:",
+                    options: [
+                        "Rash and skin blistering",
+                        "Pinpoint pupils",
+                        "Nausea & vomiting",
+                        "Sudden death with no prior symptoms"
+                    ],
+                    correctAnswerIndex: 2,
+                    [cite_start]explanation: "Initial signs of radiation exposure include Nausea & vomiting, Loss of appetite, and Malaise. [cite: 5]"
+                },
+                {
+                    question: "Which route of entry for hazardous substances involves breathing it in?",
+                    options: [
+                        "Ingestion",
+                        "Inoculation",
+                        "Inhalation",
+                        "Wound Absorption"
+                    ],
+                    correctAnswerIndex: 2,
+                    [cite_start]explanation: "Inhalation involves breathing in the substance. [cite: 5]"
+                },
+                {
+                    question: "What is a potential effect of poor practice when dealing with hazardous materials in the workplace?",
+                    options: [
+                        "Improved efficiency",
+                        "Decreased risk of exposure",
+                        "Potential consequences for health and safety",
+                        "Automatic hazard mitigation"
+                    ],
+                    correctAnswerIndex: 2,
+                    [cite_start]explanation: "Poor practice when dealing with hazardous materials can lead to potential negative consequences. [cite: 1]"
+                },
+                {
+                    question: "According to the documents, what is important to consider regarding 'environmental factors' during scene assessment?",
+                    options: [
+                        "Their irrelevance to scene safety",
+                        "Their potential to speed up the assessment process",
+                        "Their impact on scene safety",
+                        "Only their financial impact"
+                    ],
+                    correctAnswerIndex: 2,
+                    [cite_start]explanation: "It is important to consider the 'impact of environmental factors on scene safety'. [cite: 1]"
+                },
+                {
+                    question: "The document highlights the importance of determining what 'early on in assessment' regarding patients?",
+                    options: [
+                        "Their full medical history",
+                        "Their family contacts",
+                        "Patient numbers",
+                        "Their preferred hospital"
+                    ],
+                    correctAnswerIndex: 2,
+                    [cite_start]explanation: "It is important to determine 'patient numbers early on in assessment'. [cite: 1]"
+                },
+                {
+                    question: "What does the 'E' in CBRN(e) specifically refer to as a deliberate release?",
+                    options: [
+                        "Environmental",
+                        "Explosive Material",
+                        "Epidemic",
+                        "Evacuation"
+                    ],
+                    correctAnswerIndex: 1,
+                    [cite_start]explanation: "The 'e' in CBRN(e) refers to '(e)xplosive Material' as a deliberate release. [cite: 5]"
+                },
+                {
+                    question: "Which of the following is NOT a type of major incident listed in the 'Introduction to Major Incidents' document?",
+                    options: [
+                        "Big Bang",
+                        "Rising Tide",
+                        "Small Scale Local Incident",
+                        "Cloud on the Horizon"
+                    ],
+                    correctAnswerIndex: 2,
+                    [cite_start]explanation: "Types of Major Incidents listed include Big Bang, Rising Tide, Cloud on the Horizon, Headline News, Internal Incidents, CBRN, HAZMAT, Mass Casualties, and Operation Plato. [cite: 6]"
+                },
+                {
+                    question: "What is one of the key responsibilities of Police at a HazMat/CBRN(e) incident?",
+                    options: [
+                        "Mass decontamination - NHS Support",
+                        "Search and rescue",
+                        "Crime scene - perpetrators and Cordoning",
+                        "Clinical decontamination"
+                    ],
+                    correctAnswerIndex: 2,
+                    [cite_start]explanation: "Police responsibilities include 'Crime scene - perpetrators' and 'Cordoning'. [cite: 5]"
+                },
+                {
+                    question: "What is one of the key responsibilities of Fire & Rescue Service at a HazMat/CBRN(e) incident?",
+                    options: [
+                        "Providing nerve agent antidotes",
+                        "Search and rescue",
+                        "Setting up a cold zone only",
+                        "Lead on decontamination of non-ambulatory patients"
+                    ],
+                    correctAnswerIndex: 1,
+                    [cite_start]explanation: "Fire & Rescue Service responsibilities include 'Search and rescue' and 'Mass decontamination - NHS Support'. [cite: 5]"
+                },
+                {
+                    question: "What kind of incidents are LGV/HVG, Coach/Bus, and Electric Vehicle RTC’s considered?",
+                    options: [
+                        "Minor traffic incidents",
+                        "Standard road traffic collisions",
+                        "Special Circumstance RTC’s",
+                        "Internal Incidents"
+                    ],
+                    correctAnswerIndex: 2,
+                    [cite_start]explanation: "LGV/HVG, Coach/Bus, and Electric Vehicle RTC’s are considered 'Special Circumstance RTC’s'. [cite: 7]"
+                },
+                {
+                    question: "What is the meaning of 'IOR' in the context of Ambulance Response to HazMat / CBRN(e) Incidents?",
+                    options: [
+                        "Immediate Operational Review",
+                        "Initial Operational Response",
+                        "Incident Officer Ranking",
+                        "International Organization for Rescue"
+                    ],
+                    correctAnswerIndex: 1,
+                    [cite_start]explanation: "IOR stands for Initial Operational Response. [cite: 5]"
+                },
+                {
+                    question: "Which type of blast injury is caused by the impact of the over-pressurization wave on body surfaces?",
+                    options: [
+                        "Secondary",
+                        "Tertiary",
+                        "Primary",
+                        "Quaternary"
+                    ],
+                    correctAnswerIndex: 2,
+                    [cite_start]explanation: "Primary blast injuries are 'Due to high-order explosives' and 'Impact of over pressurisation wave on body surfaces'. [cite: 5]"
+                },
+                {
+                    question: "Blast injuries due to flying debris, bomb fragments, or other projectiles are classified as what type?",
+                    options: [
+                        "Primary",
+                        "Secondary",
+                        "Tertiary",
+                        "Quaternary"
+                    ],
+                    correctAnswerIndex: 1,
+                    [cite_start]explanation: "Secondary blast injuries are 'Due to flying debris, bomb fragments, other projectiles'. [cite: 5]"
+                },
+                {
+                    question: "If individuals are thrown by blast winds, what type of blast injury is sustained?",
+                    options: [
+                        "Primary",
+                        "Secondary",
+                        "Tertiary",
+                        "Quaternary"
+                    ],
+                    correctAnswerIndex: 2,
+                    [cite_start]explanation: "Tertiary blast injuries are 'Due to individuals being thrown by blast winds'. [cite: 5]"
+                },
+                {
+                    question: "What type of blast injury includes exacerbations/complications of pre-existing illnesses or injuries not due to primary, secondary, or tertiary mechanisms?",
+                    options: [
+                        "Primary",
+                        "Secondary",
+                        "Tertiary",
+                        "Quaternary"
+                    ],
+                    correctAnswerIndex: 3,
+                    [cite_start]explanation: "Quaternary blast injuries include 'any explosion-related injury, illness, or disease not due to primary, secondary, or tertiary mechanisms'. [cite: 5]"
+                },
+                {
+                    question: "What does 'EPRR' stand for in the context of major incidents?",
+                    options: [
+                        "Emergency Preparedness, Response and Recovery",
+                        "Emergency Planning and Resource Readiness",
+                        "Environmental Protection and Rapid Response",
+                        "Emergency Preparedness, Resilience and Response"
+                    ],
+                    correctAnswerIndex: 3,
+                    [cite_start]explanation: "EPRR stands for Emergency Preparedness, Resilience and Response. [cite: 4]"
+                },
+                {
+                    question: "Which is a listed objective for 'Working in Hazardous Environments'?",
+                    options: [
+                        "To increase response times",
+                        "To reduce the need for specialized equipment",
+                        "To improve awareness of the risk when working in Transport Incidents",
+                        "To delegate all risk to external agencies"
+                    ],
+                    correctAnswerIndex: 2,
+                    [cite_start]explanation: "An objective is to 'improve awareness of the risk when working: Transport Incidents'. [cite: 7]"
+                },
+                {
+                    question: "What distinguishes a 'Cloud on the Horizon' type of major incident?",
+                    options: [
+                        "It's a serious transport accident.",
+                        "It's a developing epidemic.",
+                        "It's a serious threat such as a significant chemical or nuclear release.",
+                        "It's a local internal incident."
+                    ],
+                    correctAnswerIndex: 2,
+                    [cite_start]explanation: "A 'Cloud on the Horizon' is 'a serious threat such as a significant chemical or nuclear release'. [cite: 6]"
+                },
+                {
+                    question: "What kind of major incident involves public or media alarm about an impending situation?",
+                    options: [
+                        "Big Bang",
+                        "Rising Tide",
+                        "Headline News",
+                        "Internal Incident"
+                    ],
+                    correctAnswerIndex: 2,
+                    [cite_start]explanation: "A 'Headline News' incident involves 'public or media alarm about an impending situation'. [cite: 6]"
+                },
+                {
+                    question: "What is an 'Internal Incident' in the context of major incidents?",
+                    options: [
+                        "A chemical spill at an industrial site",
+                        "A developing epidemic affecting staff",
+                        "Fire, breakdown of utilities or violent crime within an organisation",
+                        "A large-scale public gathering"
+                    ],
+                    correctAnswerIndex: 2,
+                    [cite_start]explanation: "Internal Incidents include 'fire, breakdown of utilities or violent crime' within an organization. [cite: 6]"
+                },
+                {
+                    question: "What is the recommended action for patients during a CBRN(e) release to manage their exposure?",
+                    options: [
+                        "Remain stationary and await rescue",
+                        "Move to a safe area and remove contaminated clothing",
+                        "Attempt to neutralize the substance themselves",
+                        "Wait for specialist decontamination teams before moving"
+                    ],
+                    correctAnswerIndex: 1,
+                    [cite_start]explanation: "Own role in the management of a CBRN(e) release includes encouraging patients to 'Move to a safe area' and 'Remove contaminated clothing'. [cite: 2]"
+                },
+                {
+                    question: "What is a potential health effect of hazardous materials via 'routes of entry'?",
+                    options: [
+                        "Increased appetite",
+                        "Improved respiratory function",
+                        "Specific effects on health depending on the substance",
+                        "Enhanced cognitive abilities"
+                    ],
+                    correctAnswerIndex: 2,
+                    [cite_start]explanation: "Hazardous materials have potential effects on health depending on their type and route of entry. [cite: 1]"
+                },
+                {
+                    question: "What information must be provided on the label of hazardous materials and substances?",
+                    options: [
+                        "Only the company logo",
+                        "Detailed information about the hazard, as outlined by legislation",
+                        "Marketing slogans",
+                        "The price of the material"
+                    ],
+                    correctAnswerIndex: 1,
+                    [cite_start]explanation: "Labels on hazardous materials must provide information as outlined by current legislation. [cite: 1]"
+                },
+                {
+                    question: "What does the provided documentation indicate about 'nerve agent antidotes'?",
+                    options: [
+                        "They are not effective.",
+                        "Their use is outlined as part of CBRN(e) management.",
+                        "They are only for self-administration by responders.",
+                        "They are only available at hospitals."
+                    ],
+                    correctAnswerIndex: 1,
+                    [cite_start]explanation: "The use of 'nerve agent antidotes' is outlined within the management of major incidents, specifically CBRN(e) incidents. [cite: 2]"
+                },
+                {
+                    question: "What is a characteristic of 'Sudden Onset' CBRN(e) events?",
+                    options: [
+                        "Surge of casualties over days or weeks",
+                        "More likely with biological agents",
+                        "More likely with chemical agents and includes bombs within CBRN",
+                        "May go unrecognised"
+                    ],
+                    correctAnswerIndex: 2,
+                    [cite_start]explanation: "Sudden Onset events are 'More likely with chemical' and 'Includes bombs within CBRN'. [cite: 5]"
+                },
+                {
+                    question: "What is a characteristic of 'Slowly Evolving (Emerging)' CBRN(e) events?",
+                    options: [
+                        "Obvious scene or cause",
+                        "Surge of casualties over hours",
+                        "May go unrecognised and be mistaken for natural cause (e.g., food poisoning)",
+                        "Rapid unconsciousness"
+                    ],
+                    correctAnswerIndex: 2,
+                    [cite_start]explanation: "Slowly Evolving events 'May go unrecognised' and 'May be mistaken for natural cause (food poisoning)'. [cite: 5]"
+                },
+                {
+                    question: "What are the effects of hydrogen sulphide at concentrations of 700-1000 ppm?",
+                    options: [
+                        "Odour threshold",
+                        "Slight conjunctivitis after 1hr",
+                        "Rapid unconsciousness, breathing stops, death within minutes",
+                        "Prolonged exposure may cause nausea"
+                    ],
+                    correctAnswerIndex: 2,
+                    [cite_start]explanation: "At 700-1000 ppm, hydrogen sulphide causes 'Rapid unconsciousness, 'knockdown' or immediate collapse within 1 to 2 breaths, breathing stops, death within minutes'. [cite: 5]"
+                },
+                {
+                    question: "What is the recommended action for rescuers concerning unresponsive patients in a hydrogen sulphide incident?",
+                    options: [
+                        "Immediately attempt retrieval without PPE",
+                        "Attempt retrieval only if by HART/Fire Service in appropriate PPE",
+                        "Assume they are deceased and do not approach",
+                        "Provide immediate mouth-to-mouth resuscitation"
+                    ],
+                    correctAnswerIndex: 1,
+                    [cite_start]explanation: "Patient retrieval 'Should not be attempted unless by HART/Fire Service in appropriate PPE'. [cite: 5]"
+                },
+                {
+                    question: "What is a clinical sign/symptom of Fentanyl & Carfentanil toxicity and overdose?",
+                    options: [
+                        "Dilated pupils",
+                        "Rapid breathing",
+                        "Pinpoint (constricted) pupils",
+                        "Increased energy levels"
+                    ],
+                    correctAnswerIndex: 2,
+                    [cite_start]explanation: "Signs and symptoms of Fentanyl & Carfentanil toxicity and overdose include 'Pinpoint (constricted) pupils'. [cite: 5]"
+                },
+                {
+                    question: "According to the 'Working in Hazardous Environments' document, what does 'A floating body in the water is not immediately a ROLE' imply?",
+                    options: [
+                        "It means the body is not a rescue priority.",
+                        "It signifies that immediate resuscitation should begin without assessment.",
+                        "It means it is not immediately considered a 'Rescue Operation Life Extension' and requires further assessment (weather, age, medical history) before progression.",
+                        "It indicates the body is already deceased and no action is needed."
+                    ],
+                    correctAnswerIndex: 2,
+                    [cite_start]explanation: "A floating body in the water is not immediately a ROLE; progression depends on weather, age, and medical history. [cite: 7]"
+                },
+                {
+                    question: "Which route of entry for hazardous substances involves ingesting or eating/drinking the material?",
+                    options: [
+                        "Inhalation",
+                        "Ingestion",
+                        "Inoculation",
+                        "Eyes"
+                    ],
+                    correctAnswerIndex: 1,
+                    [cite_start]explanation: "Ingestion is a route of exposure when hazardous substances are eaten or drunk. [cite: 5]"
+                },
+                {
+                    question: "Which of the following is an example of 'Inoculation' as a route of entry for hazardous substances?",
+                    options: [
+                        "Breathing in a gas",
+                        "Touching a contaminated surface with intact skin",
+                        "Percutaneous absorption through skin or via needles/bites",
+                        "Swallowing contaminated water"
+                    ],
+                    correctAnswerIndex: 2,
+                    [cite_start]explanation: "Inoculation involves percutaneous entry through the skin, or via needles/bites/pellets. [cite: 5]"
+                },
+                {
+                    question: "What symptom is typically associated with Blistering agents like Mustard Gas?",
+                    options: [
+                        "Pinpoint pupils",
+                        "Pulmonary oedema and haemorrhage, rash and skin blistering",
+                        "Sudden loss of smell",
+                        "Diarrhoea and fever"
+                    ],
+                    correctAnswerIndex: 1,
+                    [cite_start]explanation: "Blistering agents can cause 'Pulmonary oedema and haemorrhage Rash and skin blistering'. [cite: 5]"
+                },
+                {
+                    question: "Choking agents such as Chlorine and Phosgene primarily affect which body system?",
+                    options: [
+                        "Cardiovascular system",
+                        "Gastrointestinal system",
+                        "Upper airway and lungs, leading to pulmonary oedema",
+                        "Nervous system"
+                    ],
+                    correctAnswerIndex: 2,
+                    [cite_start]explanation: "Choking agents cause 'Upper airway distress' and can lead to 'Fatal pulmonary oedema'. [cite: 5]"
+                },
+                {
+                    question: "Which of the following describes a key principle for responders when dealing with HazMat/CBRN incidents, as per the documents?",
+                    options: [
+                        "Prioritize collecting evidence over personal safety.",
+                        "Use caution and keep a safe distance to avoid exposure to themselves.",
+                        "Immediately enter the hot zone without full PPE if casualties are present.",
+                        "Withhold information from the control room until the scene is fully clear."
+                    ],
+                    correctAnswerIndex: 1,
+                    [cite_start]explanation: "Responders must 'Use caution and keep a safe distance to avoid exposure to themselves'. [cite: 5]"
+                },
+                {
+                    question: "What is a core responsibility of Ambulance services during a major incident, as per the revision list?",
+                    options: [
+                        "To manage media communications.",
+                        "To cordon off the entire incident area.",
+                        "To explain the purpose of the incident command and control system.",
+                        "The NHS lead on decontamination of non-ambulatory patients."
+                    ],
+                    correctAnswerIndex: 3,
+                    [cite_start]explanation: "The NHS leads on decontamination of non-ambulatory patients during a HazMat/CBRN(e) incident. [cite: 5]"
+                }
 
             ];
 

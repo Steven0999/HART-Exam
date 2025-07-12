@@ -73,7 +73,7 @@
             background-color: #FFD54F;
             transform: translateY(-2px);
         }
-        
+
         .btn:disabled {
             background-color: #ccc;
             cursor: not-allowed;
@@ -120,16 +120,62 @@
             min-height: 30px; /* Reserve space */
         }
 
-        #explanation {
-            margin-top: 15px;
-            font-size: 1em;
-            color: #e0e0e0;
-            text-align: left;
-            padding: 10px;
-            background-color: rgba(0, 0, 0, 0.3);
-            border-radius: 8px;
-            display: none; /* Hidden by default */
+        /* --- Custom Pop-up Styles --- */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000; /* Ensure it's on top */
         }
+
+        .popup-overlay.hidden {
+            display: none;
+        }
+
+        .popup-content {
+            background-color: #333; /* Dark background for pop-up */
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            transform: scale(0.8); /* Start smaller */
+            opacity: 0; /* Start invisible */
+            transition: all 0.3s ease-out; /* Smooth transition for appearance */
+        }
+
+        /* Animation for when the popup becomes visible */
+        .popup-overlay:not(.hidden) .popup-content {
+            transform: scale(1); /* Scale up when visible */
+            opacity: 1; /* Fade in when visible */
+        }
+
+        #popup-feedback {
+            color: #FFEB3B; /* Yellow color for feedback */
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+
+        #popup-explanation {
+            color: #e0e0e0; /* Light grey for explanation text */
+            font-size: 1.1em;
+            margin-bottom: 25px;
+            text-align: left; /* Align explanation text to the left */
+        }
+
+        #popup-next-btn {
+            margin-top: 10px;
+            max-width: 200px; /* Make the button a bit smaller than general .btn */
+        }
+        /* --- End Custom Pop-up Styles --- */
+
 
         #final-score {
             color: #FFEB3B;
@@ -165,6 +211,15 @@
                 padding: 12px 20px;
                 font-size: 1em;
             }
+            .popup-content {
+                padding: 20px;
+            }
+            #popup-feedback {
+                font-size: 1.5em;
+            }
+            #popup-explanation {
+                font-size: 0.95em;
+            }
         }
         /* --- End CSS --- */
     </style>
@@ -188,7 +243,6 @@
                 <button class="btn answer-btn" data-answer-index="3"></button>
             </div>
             <div id="feedback-message"></div>
-            <div id="explanation"></div>
             <div class="navigation-buttons">
                 <button id="prev-question-btn" class="btn">Previous</button>
                 <button id="next-question-btn" class="btn">Next</button>
@@ -202,6 +256,13 @@
         </div>
     </div>
 
+    <div id="custom-popup" class="popup-overlay hidden">
+        <div class="popup-content">
+            <h3 id="popup-feedback"></h3>
+            <p id="popup-explanation"></p>
+            <button id="popup-next-btn" class="btn">Continue</button>
+        </div>
+    </div>
     <script>
         /* --- JavaScript for Quiz Logic --- */
         document.addEventListener('DOMContentLoaded', () => {
@@ -212,15 +273,20 @@
             const startQuizBtn = document.getElementById('start-quiz-btn');
             const restartQuizBtn = document.getElementById('restart-quiz-btn');
             const prevQuestionBtn = document.getElementById('prev-question-btn');
-            const nextQuestionBtn = document.getElementById('next-question-btn');
+            const nextQuestionBtn = document.getElementById('next-question-btn'); // Main navigation 'Next'
 
             const questionNumberSpan = document.getElementById('question-number');
             const questionText = document.getElementById('question-text');
             const answerButtonsContainer = document.getElementById('answer-buttons');
-            const feedbackMessage = document.getElementById('feedback-message');
-            const explanationDiv = document.getElementById('explanation');
+            const feedbackMessage = document.getElementById('feedback-message'); // This stays for immediate feedback below buttons
             const finalScoreSpan = document.getElementById('final-score');
             const totalQuestionsSpan = document.getElementById('total-questions');
+
+            // Custom Pop-up elements
+            const customPopup = document.getElementById('custom-popup');
+            const popupFeedback = document.getElementById('popup-feedback');
+            const popupExplanation = document.getElementById('popup-explanation');
+            const popupNextBtn = document.getElementById('popup-next-btn'); // 'Continue' button inside the popup
 
             let questions = []; // This will hold the shuffled questions for the current quiz session
             let currentQuestionIndex = 0;

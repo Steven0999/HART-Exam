@@ -73,7 +73,7 @@
             background-color: #FFD54F;
             transform: translateY(-2px);
         }
-        
+
         .btn:disabled {
             background-color: #ccc;
             cursor: not-allowed;
@@ -120,16 +120,62 @@
             min-height: 30px; /* Reserve space */
         }
 
-        #explanation {
-            margin-top: 15px;
-            font-size: 1em;
-            color: #e0e0e0;
-            text-align: left;
-            padding: 10px;
-            background-color: rgba(0, 0, 0, 0.3);
-            border-radius: 8px;
-            display: none; /* Hidden by default */
+        /* --- Custom Pop-up Styles --- */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000; /* Ensure it's on top */
         }
+
+        .popup-overlay.hidden {
+            display: none;
+        }
+
+        .popup-content {
+            background-color: #333; /* Dark background for pop-up */
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            transform: scale(0.8); /* Start smaller */
+            opacity: 0; /* Start invisible */
+            transition: all 0.3s ease-out; /* Smooth transition for appearance */
+        }
+
+        /* Animation for when the popup becomes visible */
+        .popup-overlay:not(.hidden) .popup-content {
+            transform: scale(1); /* Scale up when visible */
+            opacity: 1; /* Fade in when visible */
+        }
+
+        #popup-feedback {
+            color: #FFEB3B; /* Yellow color for feedback */
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+
+        #popup-explanation {
+            color: #e0e0e0; /* Light grey for explanation text */
+            font-size: 1.1em;
+            margin-bottom: 25px;
+            text-align: left; /* Align explanation text to the left */
+        }
+
+        #popup-next-btn {
+            margin-top: 10px;
+            max-width: 200px; /* Make the button a bit smaller than general .btn */
+        }
+        /* --- End Custom Pop-up Styles --- */
+
 
         #final-score {
             color: #FFEB3B;
@@ -165,6 +211,15 @@
                 padding: 12px 20px;
                 font-size: 1em;
             }
+            .popup-content {
+                padding: 20px;
+            }
+            #popup-feedback {
+                font-size: 1.5em;
+            }
+            #popup-explanation {
+                font-size: 0.95em;
+            }
         }
         /* --- End CSS --- */
     </style>
@@ -188,7 +243,6 @@
                 <button class="btn answer-btn" data-answer-index="3"></button>
             </div>
             <div id="feedback-message"></div>
-            <div id="explanation"></div>
             <div class="navigation-buttons">
                 <button id="prev-question-btn" class="btn">Previous</button>
                 <button id="next-question-btn" class="btn">Next</button>
@@ -202,6 +256,13 @@
         </div>
     </div>
 
+    <div id="custom-popup" class="popup-overlay hidden">
+        <div class="popup-content">
+            <h3 id="popup-feedback"></h3>
+            <p id="popup-explanation"></p>
+            <button id="popup-next-btn" class="btn">Continue</button>
+        </div>
+    </div>
     <script>
         /* --- JavaScript for Quiz Logic --- */
         document.addEventListener('DOMContentLoaded', () => {
@@ -212,15 +273,20 @@
             const startQuizBtn = document.getElementById('start-quiz-btn');
             const restartQuizBtn = document.getElementById('restart-quiz-btn');
             const prevQuestionBtn = document.getElementById('prev-question-btn');
-            const nextQuestionBtn = document.getElementById('next-question-btn');
+            const nextQuestionBtn = document.getElementById('next-question-btn'); // Main navigation 'Next'
 
             const questionNumberSpan = document.getElementById('question-number');
             const questionText = document.getElementById('question-text');
             const answerButtonsContainer = document.getElementById('answer-buttons');
-            const feedbackMessage = document.getElementById('feedback-message');
-            const explanationDiv = document.getElementById('explanation');
+            const feedbackMessage = document.getElementById('feedback-message'); // This stays for immediate feedback below buttons
             const finalScoreSpan = document.getElementById('final-score');
             const totalQuestionsSpan = document.getElementById('total-questions');
+
+            // Custom Pop-up elements
+            const customPopup = document.getElementById('custom-popup');
+            const popupFeedback = document.getElementById('popup-feedback');
+            const popupExplanation = document.getElementById('popup-explanation');
+            const popupNextBtn = document.getElementById('popup-next-btn'); // 'Continue' button inside the popup
 
             let questions = []; // This will hold the shuffled questions for the current quiz session
             let currentQuestionIndex = 0;
@@ -233,6 +299,7 @@
             const allQuestions = [
                 // Definitions
                 {
+           //Q1
                     question: "According to the provided documents, what defines a 'Major Incident'?",
                     options: [
                         "An event involving hundreds of patients.",
@@ -243,6 +310,7 @@
                     correctAnswerIndex: 2,
                     explanation: "A Major Incident is defined as 'An event or situation with a range of serious consequences which requires special arrangements to be implemented by one or more emergency responder agency.'"
                 },
+           //Q2     
                 {
                     question: "How many patients are typically involved in a 'Major Incident' according to the documents?",
                     options: [
@@ -254,6 +322,7 @@
                     correctAnswerIndex: 1,
                     explanation: "A Major Incident typically involves 'Tens of patients'."
                 },
+           //Q3
                 {
                     question: "What is a 'Mass Casualty Incident' defined as in the provided materials?",
                     options: [
@@ -265,6 +334,7 @@
                     correctAnswerIndex: 2,
                     explanation: "A Mass Casualty Incident is defined as 'Involving Hundreds of patients'."
                 },
+            //Q4
                 {
                     question: "An incident involving 'thousands of patients' is classified as what type of incident?",
                     options: [
@@ -276,6 +346,7 @@
                     correctAnswerIndex: 3,
                     explanation: "An incident involving 'thousands of patients' is classified as a 'Catastrophic Incident'."
                 },
+            //Q5  
                 {
                     question: "What is the key difference between a HazMat incident and a CBRN(e) incident?",
                     options: [
@@ -287,7 +358,8 @@
                     correctAnswerIndex: 1,
                     explanation: "A HazMat incident is an 'accidental slip or release of a Hazardous Material', while a CBRN(e) incident is the 'deliberate release' of specific agents."
                 },
-                {
+             //Q6 
+               {
                     question: "Which of the following is NOT typically considered a 'HazMat Event' according to the provided information?",
                     options: [
                         "Large Fires",
@@ -298,6 +370,7 @@
                     correctAnswerIndex: 3,
                     explanation: "The deliberate release of a Chemical Agent falls under CBRN(e), not HazMat. HazMat events are accidental."
                 },
+                //Q7
                 {
                     question: "What does the 'C' in CBRN(e) stand for?",
                     options: [
@@ -309,6 +382,43 @@
                     correctAnswerIndex: 1,
                     explanation: "CBRN(e) stands for Chemical, Biological, Radiological, Nuclear, and (e)xplosive Material."
                 },
+                //Q8
+                {
+                    question: "What does the 'B' in CBRN(e) stand for?",
+                    options: [
+                        "Blast",
+                        "Benefit",
+                        "Burn",
+                        "Biological"
+                    ],
+                    correctAnswerIndex: 3,
+                    explanation: "CBRN(e) stands for Chemical, Biological, Radiological, Nuclear, and (e)xplosive Material."
+                },
+                //Q9
+               {
+                    question: "What does the 'R' in CBRN(e) stand for?",
+                    options: [
+                        "Radiological",
+                        "Rationalise",
+                        "Rash",
+                        "Ratonlice"
+                    ],
+                    correctAnswerIndex: 0,
+                    explanation: "CBRN(e) stands for Chemical, Biological, Radiological, Nuclear, and (e)xplosive Material."
+                },
+                //Q10
+                {
+                    question: "What does the 'N' in CBRN(e) stand for?",
+                    options: [
+                        "Number",
+                        "Nuclear",
+                        "News",
+                        "Nation"
+                    ],
+                    correctAnswerIndex: 1,
+                    explanation: "CBRN(e) stands for Chemical, Biological, Radiological, Nuclear, and (e)xplosive Material."
+                },
+                //Q11
                 {
                     question: "What does the 'e' in CBRN(e) stand for?",
                     options: [
@@ -322,6 +432,7 @@
                 },
 
                 // Mnemonics
+                //Q12
                 {
                     question: "Which mnemonic is used for constructing a report for major incidents, including details like what happened and patient numbers?",
                     options: [
@@ -333,6 +444,7 @@
                     correctAnswerIndex: 2,
                     explanation: "METHANE is the mnemonic used for constructing a report, asking questions like 'What happened?' and 'How many patients?'."
                 },
+                //Q13
                 {
                     question: "The METHANE report should include what information regarding patients?",
                     options: [
@@ -344,6 +456,7 @@
                     correctAnswerIndex: 1,
                     explanation: "The METHANE report includes 'How many patients and what would you expect their injuries and priorities to be?'."
                 },
+                //Q14
                 {
                     question: "In the context of the METHANE report, what question relates to inter-agency communication?",
                     options: [
@@ -355,6 +468,7 @@
                     correctAnswerIndex: 1,
                     explanation: "The METHANE report covers 'What could you tell the other agencies in attendance?' and 'What information would you like from other agencies?'."
                 },
+                //Q15
                 {
                     question: "Which of the following is a component of the 'RESCUE FORMULA' for water incidents?",
                     options: [
@@ -366,6 +480,7 @@
                     correctAnswerIndex: 1,
                     explanation: "The RESCUE FORMULA includes SHOUT, REACH, THROW, ROW, GO AND TOW, HELO, DIVERT FLOW, NO GO."
                 },
+                //Q16
                 {
                     question: "Which of the following is one of the principles of the R-A-R mnemonic for Hazard Assessment?",
                     options: [
@@ -377,6 +492,7 @@
                     correctAnswerIndex: 1,
                     explanation: "R-A-R stands for RECOGNISE, ASSESS, REACT."
                 },
+                //Q17
                 {
                     question: "The CRESS tool is primarily used for what purpose in a hazardous substance incident?",
                     options: [
@@ -388,6 +504,7 @@
                     correctAnswerIndex: 1,
                     explanation: "The CRESS tool helps health services identify the type and nature of the hazardous substance incident by reporting key information from casualties."
                 },
+                //Q18
                 {
                     question: "What is the primary function of the BAD COLDS tool?",
                     options: [
@@ -401,6 +518,7 @@
                 },
 
                 // Scene Management
+                //Q19
                 {
                     question: "According to the Scene Assessment revision list, what is important for maximizing safety for 'everyone on scene'?",
                     options: [
@@ -412,6 +530,7 @@
                     correctAnswerIndex: 2,
                     explanation: "Maximising safety for everyone on scene and dynamic risk assessment (DRA) are highlighted as important."
                 },
+                //Q20
                 {
                     question: "In scene assessment for trauma cases, what is it important to establish?",
                     options: [
@@ -423,6 +542,7 @@
                     correctAnswerIndex: 1,
                     explanation: "It is important to establish the Mechanism of Injury (MOI) in trauma cases."
                 },
+                //Q21
                 {
                     question: "Which cordon zone is described as requiring 'Specialist Responders'?",
                     options: [
@@ -434,6 +554,7 @@
                     correctAnswerIndex: 2,
                     explanation: "The Hot Zone is for 'Specialist Responders'."
                 },
+                //Q22
                 {
                     question: "Which cordon zone is described as for 'Non Specialist's With Appropriate PPE'?",
                     options: [
@@ -445,6 +566,7 @@
                     correctAnswerIndex: 2,
                     explanation: "The Warm Zone is for 'Non Specialist's With Appropriate PPE'."
                 },
+                //Q23
                 {
                     question: "What is the primary characteristic of the 'Cold Zone' in incident cordons?",
                     options: [
@@ -3052,7 +3174,8 @@
         explanation: "Warning signal words indicate a less severe hazard than 'Danger' but still alert to potential risks."
     }
         ];
-            function shuffleArray(array) {
+                            
+                function shuffleArray(array) {
                 for (let i = array.length - 1; i > 0; i--) {
                     const j = Math.floor(Math.random() * (i + 1));
                     [array[i], array[j]] = [array[j], array[i]]; // Swap elements
@@ -3095,10 +3218,9 @@
                     answerButtonsContainer.appendChild(button);
                 });
 
-                // Reset feedback and explanation
+                // Reset feedback and hide pop-up
                 feedbackMessage.textContent = '';
-                explanationDiv.textContent = '';
-                explanationDiv.style.display = 'none';
+                customPopup.classList.add('hidden'); // Ensure pop-up is hidden when new question displays
 
                 // Re-enable all buttons and remove styling
                 const allAnswerBtns = answerButtonsContainer.querySelectorAll('.answer-btn');
@@ -3107,7 +3229,7 @@
                     btn.classList.remove('correct', 'incorrect');
                 });
 
-                // Check if this question was already answered and restore state
+                // Check if this question was already answered and restore state for review
                 if (answeredQuestionsState.has(currentQuestionIndex)) {
                     const state = answeredQuestionsState.get(currentQuestionIndex);
                     allAnswerBtns.forEach(btn => {
@@ -3119,8 +3241,8 @@
                     // Show correct answer for review
                     allAnswerBtns[questionData.correctAnswerIndex].classList.add('correct');
                     feedbackMessage.textContent = state.correct ? 'Correct!' : 'Incorrect.';
-                    explanationDiv.textContent = questionData.explanation;
-                    explanationDiv.style.display = 'block';
+                    // For review mode, we are not showing the popup again directly on display,
+                    // but the user could click "Previous" and the correct/incorrect styling will be there.
                     questionAnswered = true; // Mark as answered for navigation purposes
                 } else {
                     questionAnswered = false; // Not yet answered
@@ -3143,18 +3265,24 @@
                     }
                 });
 
-                // Always show the correct answer
+                // Always show the correct answer visually
                 allAnswerBtns[questionData.correctAnswerIndex].classList.add('correct');
 
                 if (isCorrect) {
                     score++;
-                    feedbackMessage.textContent = 'Correct!';
+                    feedbackMessage.textContent = 'Correct!'; // Update immediate feedback
+                    popupFeedback.textContent = 'Correct!'; // Set pop-up feedback
                 } else {
-                    feedbackMessage.textContent = 'Incorrect.';
+                    feedbackMessage.textContent = 'Incorrect.'; // Update immediate feedback
+                    popupFeedback.textContent = 'Incorrect.'; // Set pop-up feedback
                 }
 
-                explanationDiv.textContent = questionData.explanation;
-                explanationDiv.style.display = 'block';
+                popupExplanation.textContent = questionData.explanation; // Set pop-up explanation
+                customPopup.classList.remove('hidden'); // Show the custom pop-up
+
+                // Temporarily disable main navigation buttons while pop-up is active
+                prevQuestionBtn.disabled = true;
+                nextQuestionBtn.disabled = true;
 
                 // Store the answer state
                 answeredQuestionsState.set(currentQuestionIndex, {
@@ -3162,22 +3290,30 @@
                     correct: isCorrect,
                     scoreAwarded: isCorrect ? 1 : 0
                 });
-                
-                updateNavigationButtons();
+
+                // Navigation buttons will be updated when the popup is dismissed and next question loads
             }
 
             function updateNavigationButtons() {
+                // This function is called by displayQuestion() and at end of startGame().
+                // It sets the base state of navigation buttons.
                 prevQuestionBtn.disabled = currentQuestionIndex === 0;
-                nextQuestionBtn.disabled = false; // Enable by default, disable at end
-
+                
                 if (currentQuestionIndex === questions.length - 1) {
                     nextQuestionBtn.textContent = 'Finish Quiz';
                 } else {
                     nextQuestionBtn.textContent = 'Next';
                 }
+                
+                // Crucially, only enable the 'Next' button if the pop-up is not currently shown.
+                // The pop-up's 'Continue' button handles progression when the pop-up is active.
+                if (customPopup.classList.contains('hidden')) {
+                     nextQuestionBtn.disabled = false; // Re-enable if pop-up is hidden
+                }
             }
 
             function handleNextQuestion() {
+                customPopup.classList.add('hidden'); // Ensure pop-up is hidden when navigating
                 if (currentQuestionIndex < questions.length - 1) {
                     displayQuestion(currentQuestionIndex + 1);
                 } else {
@@ -3186,6 +3322,7 @@
             }
 
             function handlePreviousQuestion() {
+                customPopup.classList.add('hidden'); // Ensure pop-up is hidden when navigating
                 if (currentQuestionIndex > 0) {
                     displayQuestion(currentQuestionIndex - 1);
                 }
@@ -3194,7 +3331,8 @@
             function endGame() {
                 gameScreen.classList.add('hidden');
                 endScreen.classList.remove('hidden');
-                
+                customPopup.classList.add('hidden'); // Ensure popup is hidden at end of game
+
                 // Recalculate final score based on answeredQuestionsState
                 let finalScore = 0;
                 answeredQuestionsState.forEach(state => {
@@ -3208,8 +3346,13 @@
             // Event Listeners
             startQuizBtn.addEventListener('click', startGame);
             restartQuizBtn.addEventListener('click', startGame);
+            
+            // Main navigation buttons
             nextQuestionBtn.addEventListener('click', handleNextQuestion);
             prevQuestionBtn.addEventListener('click', handlePreviousQuestion);
+
+            // Pop-up's 'Continue' button
+            popupNextBtn.addEventListener('click', handleNextQuestion); // Clicking 'Continue' in popup moves to next question
         });
         /* --- End JavaScript --- */
     </script>

@@ -3118,7 +3118,8 @@
         explanation: "Warning signal words indicate a less severe hazard than 'Danger' but still alert to potential risks."
     }
         ];
-            function shuffleArray(array) {
+                            
+                function shuffleArray(array) {
                 for (let i = array.length - 1; i > 0; i--) {
                     const j = Math.floor(Math.random() * (i + 1));
                     [array[i], array[j]] = [array[j], array[i]]; // Swap elements
@@ -3161,10 +3162,9 @@
                     answerButtonsContainer.appendChild(button);
                 });
 
-                // Reset feedback and explanation
+                // Reset feedback and hide pop-up
                 feedbackMessage.textContent = '';
-                explanationDiv.textContent = '';
-                explanationDiv.style.display = 'none';
+                customPopup.classList.add('hidden'); // Ensure pop-up is hidden when new question displays
 
                 // Re-enable all buttons and remove styling
                 const allAnswerBtns = answerButtonsContainer.querySelectorAll('.answer-btn');
@@ -3173,7 +3173,7 @@
                     btn.classList.remove('correct', 'incorrect');
                 });
 
-                // Check if this question was already answered and restore state
+                // Check if this question was already answered and restore state for review
                 if (answeredQuestionsState.has(currentQuestionIndex)) {
                     const state = answeredQuestionsState.get(currentQuestionIndex);
                     allAnswerBtns.forEach(btn => {
@@ -3185,8 +3185,8 @@
                     // Show correct answer for review
                     allAnswerBtns[questionData.correctAnswerIndex].classList.add('correct');
                     feedbackMessage.textContent = state.correct ? 'Correct!' : 'Incorrect.';
-                    explanationDiv.textContent = questionData.explanation;
-                    explanationDiv.style.display = 'block';
+                    // For review mode, we are not showing the popup again directly on display,
+                    // but the user could click "Previous" and the correct/incorrect styling will be there.
                     questionAnswered = true; // Mark as answered for navigation purposes
                 } else {
                     questionAnswered = false; // Not yet answered
@@ -3209,18 +3209,24 @@
                     }
                 });
 
-                // Always show the correct answer
+                // Always show the correct answer visually
                 allAnswerBtns[questionData.correctAnswerIndex].classList.add('correct');
 
                 if (isCorrect) {
                     score++;
-                    feedbackMessage.textContent = 'Correct!';
+                    feedbackMessage.textContent = 'Correct!'; // Update immediate feedback
+                    popupFeedback.textContent = 'Correct!'; // Set pop-up feedback
                 } else {
-                    feedbackMessage.textContent = 'Incorrect.';
+                    feedbackMessage.textContent = 'Incorrect.'; // Update immediate feedback
+                    popupFeedback.textContent = 'Incorrect.'; // Set pop-up feedback
                 }
 
-                explanationDiv.textContent = questionData.explanation;
-                explanationDiv.style.display = 'block';
+                popupExplanation.textContent = questionData.explanation; // Set pop-up explanation
+                customPopup.classList.remove('hidden'); // Show the custom pop-up
+
+                // Temporarily disable main navigation buttons while pop-up is active
+                prevQuestionBtn.disabled = true;
+                nextQuestionBtn.disabled = true;
 
                 // Store the answer state
                 answeredQuestionsState.set(currentQuestionIndex, {
@@ -3228,22 +3234,30 @@
                     correct: isCorrect,
                     scoreAwarded: isCorrect ? 1 : 0
                 });
-                
-                updateNavigationButtons();
+
+                // Navigation buttons will be updated when the popup is dismissed and next question loads
             }
 
             function updateNavigationButtons() {
+                // This function is called by displayQuestion() and at end of startGame().
+                // It sets the base state of navigation buttons.
                 prevQuestionBtn.disabled = currentQuestionIndex === 0;
-                nextQuestionBtn.disabled = false; // Enable by default, disable at end
-
+                
                 if (currentQuestionIndex === questions.length - 1) {
                     nextQuestionBtn.textContent = 'Finish Quiz';
                 } else {
                     nextQuestionBtn.textContent = 'Next';
                 }
+                
+                // Crucially, only enable the 'Next' button if the pop-up is not currently shown.
+                // The pop-up's 'Continue' button handles progression when the pop-up is active.
+                if (customPopup.classList.contains('hidden')) {
+                     nextQuestionBtn.disabled = false; // Re-enable if pop-up is hidden
+                }
             }
 
             function handleNextQuestion() {
+                customPopup.classList.add('hidden'); // Ensure pop-up is hidden when navigating
                 if (currentQuestionIndex < questions.length - 1) {
                     displayQuestion(currentQuestionIndex + 1);
                 } else {
@@ -3252,6 +3266,7 @@
             }
 
             function handlePreviousQuestion() {
+                customPopup.classList.add('hidden'); // Ensure pop-up is hidden when navigating
                 if (currentQuestionIndex > 0) {
                     displayQuestion(currentQuestionIndex - 1);
                 }
@@ -3260,7 +3275,8 @@
             function endGame() {
                 gameScreen.classList.add('hidden');
                 endScreen.classList.remove('hidden');
-                
+                customPopup.classList.add('hidden'); // Ensure popup is hidden at end of game
+
                 // Recalculate final score based on answeredQuestionsState
                 let finalScore = 0;
                 answeredQuestionsState.forEach(state => {
@@ -3274,8 +3290,13 @@
             // Event Listeners
             startQuizBtn.addEventListener('click', startGame);
             restartQuizBtn.addEventListener('click', startGame);
+            
+            // Main navigation buttons
             nextQuestionBtn.addEventListener('click', handleNextQuestion);
             prevQuestionBtn.addEventListener('click', handlePreviousQuestion);
+
+            // Pop-up's 'Continue' button
+            popupNextBtn.addEventListener('click', handleNextQuestion); // Clicking 'Continue' in popup moves to next question
         });
         /* --- End JavaScript --- */
     </script>

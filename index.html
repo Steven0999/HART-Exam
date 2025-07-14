@@ -601,12 +601,12 @@
                     explanation: "Triage aims to categorize patients based on the severity of their injuries to prioritize treatment."
                 },
                 {
-                    question: "What are the two phases of triage mentioned in the documents?",
+                    question: "What are the two phases of triages used currently?",
                     options: [
                         "Assessment and Treatment",
                         "Triage Sieve and Triage Sort",
                         "Initial and Secondary",
-                        "Hot and Cold"
+                        "Ten Second Triage and Major Incidence Triage Tool"
                     ],
                     correctAnswerIndex: 1,
                     explanation: "The two phases of triage are Triage Sieve and Triage Sort."
@@ -1490,28 +1490,6 @@
         explanation: "Signs and symptoms of Fentanyl & Carfentanil toxicity and overdose include 'Pinpoint (constricted) pupils'."
     },
     {
-        question: "What is a key responsibility of the Police at a HazMat/CBRN(e) incident?",
-        options: [
-            "Leading mass decontamination of all patients.",
-            "Providing definitive medical treatment.",
-            "Crime scene management and cordoning.",
-            "Directing air traffic control."
-        ],
-        correctAnswerIndex: 2,
-        explanation: "Police responsibilities include 'Crime scene - perpetrators' and 'Cordoning'."
-    },
-    {
-        question: "What is a key responsibility of the Fire & Rescue Service (FRS) at a HazMat/CBRN(e) incident?",
-        options: [
-            "Providing media interviews.",
-            "Search and rescue operations.",
-            "Managing hospital bed allocation.",
-            "Investigating the financial aspects of the incident."
-        ],
-        correctAnswerIndex: 1,
-        explanation: "Fire & Rescue Service responsibilities include 'Search and rescue'."
-    },
-    {
         question: "What does 'IOR' stand for in the context of Ambulance Response to HazMat / CBRN(e) Incidents?",
         options: [
             "Immediate Operational Review",
@@ -1639,7 +1617,7 @@
         options: [
             "It means the body is already deceased and no action is needed.",
             "It signifies that immediate resuscitation should begin without assessment.",
-            "It means it is not immediately considered a 'Rescue Operation Life Extension' and requires further assessment (weather, age, medical history) before progression.",
+            "It means it is not immediately considered a 'Recognition Of Life Extinct' and requires further assessment (medical assessment) before progression.",
             "It means the body should be ignored until specialist divers arrive."
         ],
         correctAnswerIndex: 2,
@@ -1740,13 +1718,13 @@
     {
         question: "What are the two phases of triage?",
         options: [
-            "Hot and Cold Triage",
+            "Ten Second Triage and Major Incidence Triage Tool",
             "Assessment and Treatment Triage",
             "Triage Sieve and Triage Sort",
             "Initial and Secondary Triage"
         ],
-        correctAnswerIndex: 2,
-        explanation: "The two phases of triage are Triage Sieve and Triage Sort."
+        correctAnswerIndex: 0,
+        explanation: "The two phases of triage are TST and MITT."
     },
     {
         question: "What is a potential risk associated with 'over-triaging' patients?",
@@ -2252,13 +2230,13 @@
     {
         question: "What is the responsibility of the 'Attendant' if first on scene at a major incident?",
         options: [
-            "To drive the ambulance away from the scene.",
-            "To take charge of all operations immediately.",
+            "To drive the ambulance away from the scene, very fast!.",
+            "Assume the role of Operational Commander (OC) until relieved by trained Ambulance Commander, Don PPE, assess scene and carry out a METHANE to ambulance Control.",
             "To conduct initial patient assessment and assist the driver's role.",
-            "To contact the media."
+            "Treat the first person you see."
         ],
-        correctAnswerIndex: 2,
-        explanation: "The attendant's role typically involves initial patient assessment and supporting the driver's overall scene assessment and initial actions."
+        correctAnswerIndex: 1,
+        explanation: "The attendant's role via NARU Action card is to park as near scene as safety permits, provide intial windscreen report, assume role as OC, Don PPE, DO NOT ATTEMPT RESCUE OR TREATMENT OF CASUALTIES and provide a METHANE to control."
     },
     {
         question: "What are 'standard communication methods' essential for in major incidents?",
@@ -3172,7 +3150,57 @@
         ],
         correctAnswerIndex: 1,
         explanation: "Warning signal words indicate a less severe hazard than 'Danger' but still alert to potential risks."
-    }
+    },
+                {
+                    question: "Which of these is NOT a Cat 1 responder?",
+                options: [
+                    "Emergency Services (Police, Fire, Ambulance)",
+                    "Local Authorities (local councils)",
+                    "Transport Operatores",
+                    "Environmental Agencies"
+                ],
+                correctAnswerIndex: 3,
+                explination:"Transport Operators are Cat 2 responders. Cat 1 also includes: HM Coastguard and NHS Trusts."
+                },
+                {
+                    question: "Which of these is NOT a Cat 2 responder?",
+                options: [
+                    "Utilitiy Companies",
+                    "Local Authorities (local councils)",
+                    "Transport Operatores",
+                    "Harbout authories "
+                ],
+                correctAnswerIndex: 3,
+                explination:"Local Authorities are classed as Cat 1 responders."
+                },
+                {
+                    question: "What does NARU stand for?",
+                options: [
+                    "National Ambulance Resource Unit",
+                    "National Ambulance Resource Utilities",
+                    "National Ambulance Resilience Unit",
+                    "National Ambulance Resilience Utilities"
+                ],
+                correctAnswerIndex: 2,
+                explination: "NARU (National Ambulance Resilience Unit, supports specialist training to NHS staff focusing on Major Incidence and Hazardous Environments"
+                },
+                {
+                    question: ,
+                options: [
+
+                ],
+                correctAnswerIndex: ,
+                explination:
+                },
+                /*{
+                    question: ,
+                options: [
+
+                ],
+                correctAnswerIndex: ,
+                explination:
+                },*/
+                    
         ];
                             
                 function shuffleArray(array) {
